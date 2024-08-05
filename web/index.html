@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,12 +28,30 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>scouting_site</title>
   <link rel="manifest" href="manifest.json">
+
 </head>
+
 <body>
   <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    if ('serviceWorker' in navigator && window.navigator.onLine) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/flutter_service_worker.js')
+          .then(function (registration) {
+            console.log('ServiceWorker registration successful with scope:', registration.scope);
+          })
+          .catch(function (error) {
+            console.log('ServiceWorker registration failed:', error);
+          });
+      });
+    }
+  </script>
+
 </body>
+
 </html>
