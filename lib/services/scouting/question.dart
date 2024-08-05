@@ -1,15 +1,15 @@
 class Question {
   final AnswerType type;
-  final String question;
+  final String questionText;
   Object? answer;
   final List<Object>? options;
 
   Question({
     required this.type,
-    required this.question,
+    required this.questionText,
     this.options,
   }) {
-    if (type == AnswerType.enumerated && options == null) {
+    if (type == AnswerType.dropdown && options == null) {
       throw ArgumentError(
         'An enumerated question must have options provided. Options cannot be null.',
       );
@@ -17,8 +17,4 @@ class Question {
   }
 }
 
-enum AnswerType {
-  number,
-  text,
-  enumerated,
-}
+enum AnswerType { number, text, dropdown, checkbox, multipleChoice }

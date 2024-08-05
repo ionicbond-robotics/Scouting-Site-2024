@@ -60,6 +60,7 @@ class _FormPageState extends State<FormPage> {
     for (Question question in widget.data.questions) {
       widgets.add(const SizedBox(height: 5));
       widgets.add(QuestionWidget(question: question));
+      widgets.add(const Divider());
     }
 
     return widgets;

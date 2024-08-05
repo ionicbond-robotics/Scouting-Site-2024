@@ -6,11 +6,20 @@ import 'package:scouting_site/widgets/form_page.dart';
 class Scouting {
   static final List<FormPageData> _pages = [
     FormPageData(pageName: "Autonomous", questions: [
-      Question(type: AnswerType.text, question: "Notes amount"),
+      Question(type: AnswerType.text, questionText: "Notes amount"),
       Question(
-          type: AnswerType.enumerated,
-          question: "Start position",
+          type: AnswerType.dropdown,
+          questionText: "Start position",
           options: ["Top", "Middle"]),
+      Question(
+        type: AnswerType.checkbox,
+        questionText: "Autonomous?",
+      ),
+      Question(
+        type: AnswerType.multipleChoice,
+        options: ["Yes", "No", "Brocolli"],
+        questionText: "How many?",
+      )
     ])
   ];
 
