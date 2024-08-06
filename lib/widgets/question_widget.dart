@@ -46,8 +46,9 @@ class QuestionWidgetState extends State<QuestionWidget> {
       return entries;
     }
 
-    for (Object option in question.options!) {
-      entries.add(DropdownMenuEntry(value: option, label: option.toString()));
+    for (Object? option in question.options!) {
+      entries.add(
+          DropdownMenuEntry(value: option, label: option?.toString() ?? ""));
     }
 
     return entries;
@@ -67,6 +68,8 @@ class QuestionWidgetState extends State<QuestionWidget> {
         return generateCheckbox(question);
       case AnswerType.multipleChoice:
         return generateMultipleChoice(question);
+      case AnswerType.counter:
+        return generateCounter(question);
     }
   }
 
@@ -194,4 +197,91 @@ class QuestionWidgetState extends State<QuestionWidget> {
           ),
         ],
       );
+
+  Column generateCounter(Question question) {
+    String maxString = question.options?[2]?.toString() ?? "";
+    String minString = question.options?[1]?.toString() ?? "";
+
+    int getCurrentValue() => int.parse(question.answer?.toString() ?? "0");
+
+    int? max;
+    int? min;
+
+    int currentValue = getCurrentValue();
+
+    if (maxString != "") {
+      max = int.parse(maxString);
+      if (currentValue > max) {
+        question.answer = max;
+      }
+    }
+    if (minString != "") {
+      min = int.parse(minString);
+      if (currentValue < min) {
+        question.answer = min;
+      }
+    }
+
+    question.answer ??= question.options?[0] ?? min;
+
+    currentValue = getCurrentValue();
+
+    return Column(
+      children: [
+        Text(
+          question.questionText,
+          textScaler: const TextScaler.linear(1.2),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              iconSize: 30,
+              onPressed: () {
+                setState(() {
+                  if (max != null && currentValue + 1 > max) {
+                    question.answer = max;
+                  } else {
+                    question.answer = currentValue + 1;
+                  }
+                });
+              },
+              icon: const Icon(
+                Icons.add_outlined,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              currentValue.toString(),
+              textScaler: const TextScaler.linear(1.4),
+            ),
+            const SizedBox(width: 10),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  if (min != null && currentValue - 1 < min) {
+                    question.answer = min;
+                  } else {
+                    question.answer = currentValue - 1;
+                  }
+                });
+              },
+              iconSize: 30,
+              icon: const Icon(
+                Icons.remove_outlined,
+              ),
+            ),
+          ],
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              question.answer = question.options?[0] ?? min;
+            });
+          },
+          icon: const Icon(Icons.refresh_outlined),
+        )
+      ],
+    );
+  }
 }

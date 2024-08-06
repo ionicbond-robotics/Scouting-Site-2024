@@ -26,11 +26,14 @@ class _FormPageState extends State<FormPage> {
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(widget.data.pageName),
       ),
-      body: Container(
+      body: SingleChildScrollView(
+        child: Container(
           color: Colors.white,
           child: Column(
             children: getQuestionWidgets(),
-          )),
+          ),
+        ),
+      ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,

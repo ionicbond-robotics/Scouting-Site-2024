@@ -10,21 +10,37 @@ class Scouting {
       questions: [
         Question(type: AnswerType.integer, questionText: "Notes amount"),
         Question(
-            type: AnswerType.dropdown,
-            questionText: "Start position",
-            options: ["Top", "Middle"]),
+          type: AnswerType.dropdown,
+          questionText: "Start position",
+          options: [
+            "Top",
+            "Middle",
+          ],
+        ),
         Question(
           type: AnswerType.checkbox,
           questionText: "Autonomous?",
         ),
         Question(
           type: AnswerType.multipleChoice,
-          options: ["Yes", "No", "Brocolli"],
+          options: [
+            "Yes",
+            "No",
+            "Brocolli",
+          ],
           questionText: "How many?",
         ),
         Question(
           type: AnswerType.text,
           questionText: "Your opinion about canibalism",
+        ),
+        Question(
+          type: AnswerType.counter,
+          questionText: "Did they do it?",
+          options: [
+            0, // initial
+            0, // min
+          ],
         ),
       ],
     )
