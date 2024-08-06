@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scouting_site/services/cast.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/scouting/question.dart';
@@ -21,10 +22,14 @@ class QuestionWidgetState extends State<QuestionWidget> {
   void initState() {
     super.initState();
 
-    optionsValues = {};
-    if (widget._question.options != null) {
-      for (var option in widget._question.options!) {
-        optionsValues[option.toString()] = false;
+    if (widget._question.type == AnswerType.multipleChoice) {
+      optionsValues = {};
+      if (widget._question.options != null) {
+        optionsValues = tryCast(widget._question.answer) ?? {};
+      } else {
+        throw ArgumentError(
+          'An enumerated question must have options provided. Options cannot be null.',
+        );
       }
     }
   }
@@ -51,6 +56,7 @@ class QuestionWidgetState extends State<QuestionWidget> {
   Widget generateQuestionWidget() {
     Question question = widget._question;
     switch (widget._question.type) {
+      case AnswerType.integer:
       case AnswerType.number:
         return generateNumberInput(question);
       case AnswerType.dropdown:
@@ -128,18 +134,26 @@ class QuestionWidgetState extends State<QuestionWidget> {
     );
   }
 
-  DialogTextInput generateNumberInput(Question question) => DialogTextInput(
-        onSubmit: (value) {
-          question.answer = value;
-        },
-        label: question.questionText,
-        formatter: TextFormatterBuilder.decimalTextFormatter(),
-      );
+  DialogTextInput generateNumberInput(Question question) {
+    FilteringTextInputFormatter formatter = question.type == AnswerType.integer
+        ? TextFormatterBuilder.integerTextFormatter()
+        : TextFormatterBuilder.decimalTextFormatter();
+
+    return DialogTextInput(
+      onSubmit: (value) {
+        question.answer = value;
+      },
+      label: question.questionText,
+      initialText: question.answer?.toString(),
+      formatter: formatter,
+    );
+  }
 
   Widget generateTextInput(Question question) => DialogTextInput(
         onSubmit: (value) {
           question.answer = value;
         },
+        initialText: question.answer.toString(),
         label: question.questionText,
       );
 
@@ -150,6 +164,7 @@ class QuestionWidgetState extends State<QuestionWidget> {
         onSelected: (value) {
           question.answer = value;
         },
+        initialSelection: question.answer,
       );
 
   Row generateCheckbox(Question question, {Function(bool)? customFallback}) =>

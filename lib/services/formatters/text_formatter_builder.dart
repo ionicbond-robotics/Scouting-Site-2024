@@ -9,4 +9,13 @@ class TextFormatterBuilder {
       return FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'));
     }
   }
+
+  static FilteringTextInputFormatter integerTextFormatter(
+      {bool allowNegative = false}) {
+    if (allowNegative) {
+      return FilteringTextInputFormatter.allow(RegExp(r'[0-9-]'));
+    } else {
+      return FilteringTextInputFormatter.allow(RegExp(r'[0-9]'));
+    }
+  }
 }

@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     "Ionic Bond #9738",
     "Bumblebee #3399",
   ];
+
   String? _scouterName;
   String? _scoutedTeam;
   int? _gameNum;
@@ -83,7 +84,7 @@ class _HomePageState extends State<HomePage> {
               },
               label: "Game #",
               initialText: _gameNum?.toString(),
-              formatter: TextFormatterBuilder.decimalTextFormatter(),
+              formatter: TextFormatterBuilder.integerTextFormatter(),
             )
           ],
         ),
@@ -94,21 +95,6 @@ class _HomePageState extends State<HomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              FloatingActionButton(
-                heroTag: 0,
-                tooltip: "Auto-Fill",
-                child: const Icon(Icons.auto_fix_normal),
-                onPressed: () async {
-                  setState(() {
-                    // _event = localStorage?.getString("event");
-                    _scouterName = localStorage?.getString("scouter");
-                    // _scoutedTeam = localStorage?.getInt("scoutedTeam");
-                  });
-                },
-              ),
-              const SizedBox(
-                width: 5,
-              ),
               FloatingActionButton(
                 heroTag: 1,
                 tooltip: "Scout",

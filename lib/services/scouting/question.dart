@@ -9,7 +9,8 @@ class Question {
     required this.questionText,
     this.options,
   }) {
-    if (type == AnswerType.dropdown && options == null) {
+    if ((type == AnswerType.dropdown || type == AnswerType.multipleChoice) &&
+        options == null) {
       throw ArgumentError(
         'An enumerated question must have options provided. Options cannot be null.',
       );
@@ -17,4 +18,11 @@ class Question {
   }
 }
 
-enum AnswerType { number, text, dropdown, checkbox, multipleChoice }
+enum AnswerType {
+  integer,
+  number,
+  text,
+  dropdown,
+  checkbox,
+  multipleChoice,
+}
