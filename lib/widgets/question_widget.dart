@@ -153,7 +153,7 @@ class QuestionWidgetState extends State<QuestionWidget> {
         onSubmit: (value) {
           question.answer = value;
         },
-        initialText: question.answer.toString(),
+        initialText: question.answer?.toString(),
         label: question.questionText,
       );
 

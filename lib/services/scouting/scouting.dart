@@ -22,6 +22,10 @@ class Scouting {
           options: ["Yes", "No", "Brocolli"],
           questionText: "How many?",
         ),
+        Question(
+          type: AnswerType.text,
+          questionText: "Your opinion about canibalism",
+        ),
       ],
     )
   ];
