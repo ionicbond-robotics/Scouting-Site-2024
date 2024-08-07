@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -10,12 +8,12 @@ class DatabaseAPI {
 
   Future<void> initialize() async {
     app = await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: Platform.environment["apiKey"] ?? "",
-        appId: Platform.environment["appId"] ?? "",
-        messagingSenderId: Platform.environment["messagingSenderId"] ?? "",
-        projectId: Platform.environment["projectId"] ?? "",
-        storageBucket: Platform.environment["storageBucket"] ?? "",
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyCGekdY8ZwDLJ1_IyghTuqkPo6t8nvxRsQ",
+        appId: "1:230452191551:web:9460182892b9bc1048b38a",
+        messagingSenderId: "230452191551",
+        projectId: "frc-scouting-testing",
+        storageBucket: "frc-scouting-testing.appspot.com",
       ),
     );
 

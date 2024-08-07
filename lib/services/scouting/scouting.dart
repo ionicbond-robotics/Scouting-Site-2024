@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:scouting_site/services/database/api.dart';
 import 'package:scouting_site/services/localstorage.dart';
+import 'package:scouting_site/services/log.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/widgets/form_page.dart';
@@ -52,12 +54,13 @@ class Scouting {
       ],
     )
   ];
-  static List<BuildContext> _pagesContexts = [];
 
+  static List<BuildContext> _pagesContexts = [];
+  static const String _competitionName = "test";
   static String? scouterName = localStorage?.getString("scouter");
   static String? scoutedTeam;
   static int? gameNumber;
-
+  static bool hasInternet = true;
   static bool isOnLastPage() {
     return _currentPage >= _pages.length - 1;
   }
@@ -77,9 +80,45 @@ class Scouting {
     }
   }
 
+  static void setupConnectivityListener() {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
+        hasInternet = false;
+      } else {
+        hasInternet = true;
+      }
+    });
+  }
+
   static Future<void> initialize() async {
+    setupConnectivityListener();
     _resetValues();
     await DatabaseAPI.instance.initialize();
+
+    if (localStorage == null) {
+      loadLocalStorage();
+    }
+
+    List<String>? formsToSend = localStorage
+        ?.getKeys()
+        .where((key) => key.startsWith("scout_"))
+        .toList();
+
+    if (formsToSend != null) {
+      for (String formName in formsToSend) {
+        String textData = localStorage?.getString(formName) ?? "";
+
+        if (textData.isNotEmpty) {
+          try {
+            Map<String, dynamic> jsonData = jsonDecode(textData);
+            await sendData(jsonData, header: formName);
+            await localStorage?.remove(formName);
+          } catch (e) {
+            logger.error('Error decoding JSON for $formName: $e');
+          }
+        }
+      }
+    }
   }
 
   static int getPageCount() {
@@ -142,13 +181,21 @@ class Scouting {
     Scouting._pages = pages;
   }
 
-  static void sendData() {
+  static Future<void> sendData(Map<String, dynamic> json,
+      {String? header}) async {
     for (int i = 0; i < _pagesContexts.length; i++) {
       Navigator.pop(_pagesContexts[i]);
     }
 
-    DatabaseAPI.instance
-        .uploadJson(toJson(), 'test', "${DateTime.now()} ${scouterName ?? ""}");
+    header ??= "${DateTime.now()} ${scouterName ?? ""}";
+
+    if (hasInternet) {
+      DatabaseAPI.instance
+          .uploadJson(json, 'scouting_$_competitionName', header);
+    } else {
+      localStorage?.setString("scout_$header", jsonEncode(json));
+    }
+
     _resetValues();
   }
 }

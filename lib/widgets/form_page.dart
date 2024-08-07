@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/question.dart';
@@ -28,7 +27,7 @@ class _FormPageState extends State<FormPage> {
         backgroundColor: Colors.black,
         title: Text(
           widget.data.pageName,
-          style: const TextStyle(color: Color.fromRGBO(255, 102, 196, 1)),
+          style: const TextStyle(color: GlobalColors.teamColor),
         ),
       ),
       body: SingleChildScrollView(
@@ -55,7 +54,7 @@ class _FormPageState extends State<FormPage> {
           else
             FloatingActionButton(
               onPressed: () {
-                Scouting.sendData();
+                Scouting.sendData(Scouting.toJson());
               },
               tooltip: "Submit",
               child: const Icon(Icons.send_outlined),

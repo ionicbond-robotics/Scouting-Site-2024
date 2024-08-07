@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scouting_site/pages/scouting_page.dart';
+import 'package:scouting_site/pages/home_page.dart';
 import 'package:scouting_site/services/localstorage.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
 

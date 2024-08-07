@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:scouting_site/pages/summation_page.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/localstorage.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
+import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 
 class ScoutingSite extends StatelessWidget {
@@ -52,7 +54,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.black,
         title: Text(
           widget.title,
-          style: const TextStyle(color: Color.fromRGBO(255, 102, 196, 1)),
+          style: const TextStyle(color: GlobalColors.teamColor),
         ),
       ),
       body: Container(
@@ -94,6 +96,24 @@ class _HomePageState extends State<HomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              const SizedBox(
+                width: 5,
+              ),
+              FloatingActionButton(
+                tooltip: "Summation",
+                child: const Icon(Icons.summarize),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SummationPage(),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(
+                width: (MediaQuery.of(context).size.width - 140),
+              ),
               FloatingActionButton(
                 heroTag: 1,
                 tooltip: "Scout",
@@ -107,7 +127,7 @@ class _HomePageState extends State<HomePage> {
 
                   Scouting.advance(context);
                 },
-              )
+              ),
             ],
           ),
         ],
