@@ -18,7 +18,7 @@ class FormPageData {
 
   static FormPageData fromJson(Map<String, dynamic> json) {
     return FormPageData(
-      pageName: json['pageName'],
+      pageName: json['pageName'] as String,
       questions: (json['questions'] as List)
           .map((item) => Question.fromJson(item))
           .toList(),

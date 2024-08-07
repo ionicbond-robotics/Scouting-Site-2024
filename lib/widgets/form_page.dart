@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/question.dart';
@@ -55,6 +57,7 @@ class _FormPageState extends State<FormPage> {
             FloatingActionButton(
               onPressed: () {
                 Scouting.sendData(Scouting.toJson());
+                Scouting.sendUnsentFormEntries();
               },
               tooltip: "Submit",
               child: const Icon(Icons.send_outlined),

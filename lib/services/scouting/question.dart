@@ -4,11 +4,11 @@ class Question {
   Object? answer;
   List<Object?>? options;
 
-  Question({
-    required this.type,
-    required this.questionText,
-    this.options = const [],
-  }) {
+  Question(
+      {required this.type,
+      required this.questionText,
+      this.options = const [],
+      this.answer}) {
     if (options != null && options!.isNotEmpty) {
       if (type == AnswerType.counter) {
         if (options!.length != 3) {
@@ -48,6 +48,7 @@ class Question {
       type: _stringToAnswerType(json['type']),
       questionText: json['questionText'],
       options: json['options']?.cast<dynamic>(),
+      answer: json['answer'],
     );
   }
 
@@ -55,6 +56,8 @@ class Question {
     switch (type) {
       case 'integer':
         return AnswerType.integer;
+      case 'number':
+        return AnswerType.number;
       case 'dropdown':
         return AnswerType.dropdown;
       case 'checkbox':

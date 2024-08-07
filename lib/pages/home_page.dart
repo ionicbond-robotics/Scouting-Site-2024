@@ -65,15 +65,15 @@ class _HomePageState extends State<HomePage> {
             DialogTextInput(
               label: "Scouter name",
               onSubmit: (value) {
-                Scouting.scouterName = value;
+                Scouting.data.scouter = value;
               },
-              initialText: Scouting.scouterName,
+              initialText: Scouting.data.scouter,
             ),
             const SizedBox(height: 5),
             DropdownMenu(
               label: const Text("Scouting On"),
               onSelected: (value) {
-                Scouting.scoutedTeam = value.toString();
+                Scouting.data.scoutedTeam = value.toString();
               },
               dropdownMenuEntries: getTeamDropdownEntries(),
               width: MediaQuery.of(context).size.width - 5,
@@ -81,10 +81,10 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 5),
             DialogTextInput(
               onSubmit: (value) {
-                Scouting.gameNumber = int.parse(value);
+                Scouting.data.game = int.parse(value);
               },
               label: "Game #",
-              initialText: Scouting.gameNumber?.toString(),
+              initialText: Scouting.data.game?.toString(),
               formatter: TextFormatterBuilder.integerTextFormatter(),
             )
           ],
@@ -119,11 +119,11 @@ class _HomePageState extends State<HomePage> {
                 tooltip: "Scout",
                 child: const Icon(Icons.login_outlined),
                 onPressed: () async {
-                  localStorage?.setInt("game", Scouting.gameNumber ?? 0);
+                  localStorage?.setInt("game", Scouting.data.game ?? 0);
                   localStorage?.setString(
-                      "scouter", Scouting.scouterName ?? "");
+                      "scouter", Scouting.data.scouter ?? "");
                   localStorage?.setString(
-                      "scoutedTeam", Scouting.scoutedTeam ?? "");
+                      "scoutedTeam", Scouting.data.scoutedTeam ?? "");
 
                   Scouting.advance(context);
                 },

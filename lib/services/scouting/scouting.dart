@@ -4,13 +4,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:scouting_site/services/database/api.dart';
 import 'package:scouting_site/services/localstorage.dart';
-import 'package:scouting_site/services/log.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
+import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/widgets/form_page.dart';
 
 class Scouting {
-  static List<FormPageData> _pages = [
+  static final List<FormPageData> _pages = [
     FormPageData(
       pageName: "Autonomous",
       questions: [
@@ -56,10 +56,11 @@ class Scouting {
   ];
 
   static List<BuildContext> _pagesContexts = [];
-  static const String _competitionName = "test";
-  static String? scouterName = localStorage?.getString("scouter");
-  static String? scoutedTeam;
-  static int? gameNumber;
+  static const String competitionName = "test";
+  static FormData data = FormData(
+    pages: _pages,
+    scouter: localStorage?.getString("scouter"),
+  );
   static bool hasInternet = true;
   static bool isOnLastPage() {
     return _currentPage >= _pages.length - 1;
@@ -70,8 +71,8 @@ class Scouting {
   static void _resetValues() {
     _currentPage = -1;
     _pagesContexts = [];
-    gameNumber = null;
-    scoutedTeam = null;
+    data.game = null;
+    data.scoutedTeam = null;
 
     for (FormPageData page in _pages) {
       for (Question question in page.questions) {
@@ -99,6 +100,10 @@ class Scouting {
       loadLocalStorage();
     }
 
+    await sendUnsentFormEntries();
+  }
+
+  static Future<void> sendUnsentFormEntries() async {
     List<String>? formsToSend = localStorage
         ?.getKeys()
         .where((key) => key.startsWith("scout_"))
@@ -109,13 +114,9 @@ class Scouting {
         String textData = localStorage?.getString(formName) ?? "";
 
         if (textData.isNotEmpty) {
-          try {
-            Map<String, dynamic> jsonData = jsonDecode(textData);
-            await sendData(jsonData, header: formName);
-            await localStorage?.remove(formName);
-          } catch (e) {
-            logger.error('Error decoding JSON for $formName: $e');
-          }
+          Map<String, dynamic> jsonData = jsonDecode(textData);
+          await sendData(jsonData, header: formName);
+          await localStorage?.remove(formName);
         }
       }
     }
@@ -166,20 +167,20 @@ class Scouting {
 
     return {
       'pages': pagesJson,
-      'scouter': scouterName,
-      'scouted_on': scoutedTeam,
-      'game': gameNumber,
+      'scouter': data.scouter,
+      'scouted_on': data.scoutedTeam,
+      'game': data.game,
     };
   }
 
-  static void fromJson(String jsonString) {
+  static List<FormPageData> fromJson(String jsonString) {
     Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
     List<FormPageData> pages = (jsonMap['pages'] as List<dynamic>)
         .map((item) => FormPageData.fromJson(item as Map<String, dynamic>))
         .toList();
 
-    Scouting._pages = pages;
+    return pages;
   }
 
   static Future<void> sendData(Map<String, dynamic> json,
@@ -188,11 +189,11 @@ class Scouting {
       Navigator.pop(_pagesContexts[i]);
     }
 
-    header ??= "${DateTime.now()} ${scouterName ?? ""}";
+    header ??= "${DateTime.now()} ${data.scouter ?? ""}";
 
     if (hasInternet) {
       DatabaseAPI.instance
-          .uploadJson(json, 'scouting_$_competitionName', header);
+          .uploadJson(json, 'scouting_$competitionName', header);
     } else {
       localStorage?.setString("scout_$header", jsonEncode(json));
     }
