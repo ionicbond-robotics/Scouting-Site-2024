@@ -13,7 +13,7 @@ class ScoutingSite extends StatelessWidget {
       title: 'Scouting Site',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
       ),
       home: const HomePage(title: 'FRC-Scouting'),
@@ -35,10 +35,6 @@ class _HomePageState extends State<HomePage> {
     "Bumblebee #3399",
   ];
 
-  String? _scouterName;
-  String? _scoutedTeam;
-  int? _gameNum;
-
   @override
   Widget build(BuildContext context) {
     teams.sort((a, b) {
@@ -53,8 +49,11 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Text(widget.title),
+        backgroundColor: Colors.black,
+        title: Text(
+          widget.title,
+          style: const TextStyle(color: Color.fromRGBO(255, 102, 196, 1)),
+        ),
       ),
       body: Container(
         color: const Color.fromARGB(255, 255, 255, 255),
@@ -64,15 +63,15 @@ class _HomePageState extends State<HomePage> {
             DialogTextInput(
               label: "Scouter name",
               onSubmit: (value) {
-                _scouterName = value;
+                Scouting.scouterName = value;
               },
-              initialText: _scouterName,
+              initialText: Scouting.scouterName,
             ),
             const SizedBox(height: 5),
             DropdownMenu(
               label: const Text("Scouting On"),
               onSelected: (value) {
-                _scoutedTeam = value.toString();
+                Scouting.scoutedTeam = value.toString();
               },
               dropdownMenuEntries: getTeamDropdownEntries(),
               width: MediaQuery.of(context).size.width - 5,
@@ -80,10 +79,10 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 5),
             DialogTextInput(
               onSubmit: (value) {
-                _gameNum = int.parse(value);
+                Scouting.gameNumber = int.parse(value);
               },
               label: "Game #",
-              initialText: _gameNum?.toString(),
+              initialText: Scouting.gameNumber?.toString(),
               formatter: TextFormatterBuilder.integerTextFormatter(),
             )
           ],
@@ -100,9 +99,12 @@ class _HomePageState extends State<HomePage> {
                 tooltip: "Scout",
                 child: const Icon(Icons.login_outlined),
                 onPressed: () async {
-                  localStorage?.setInt("game", _gameNum ?? 0);
-                  localStorage?.setString("scouter", _scouterName ?? "");
-                  localStorage?.setString("scoutedTeam", _scoutedTeam ?? "");
+                  localStorage?.setInt("game", Scouting.gameNumber ?? 0);
+                  localStorage?.setString(
+                      "scouter", Scouting.scouterName ?? "");
+                  localStorage?.setString(
+                      "scoutedTeam", Scouting.scoutedTeam ?? "");
+
                   Scouting.advance(context);
                 },
               )
@@ -131,6 +133,7 @@ class _HomePageState extends State<HomePage> {
     if (match != null && match.groupCount > 0) {
       return int.tryParse(match.group(1) ?? '');
     }
+
     return null;
   }
 }

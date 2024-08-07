@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/question.dart';
@@ -22,9 +23,13 @@ class _FormPageState extends State<FormPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: _handleBackButton,
           tooltip: "Back",
+          color: Colors.white,
         ),
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Text(widget.data.pageName),
+        backgroundColor: Colors.black,
+        title: Text(
+          widget.data.pageName,
+          style: const TextStyle(color: Color.fromRGBO(255, 102, 196, 1)),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -46,6 +51,14 @@ class _FormPageState extends State<FormPage> {
               },
               heroTag: 2 + Scouting.getCurrentPageNumber(),
               child: GlobalIcons.nextPageIcon,
+            )
+          else
+            FloatingActionButton(
+              onPressed: () {
+                Scouting.sendData();
+              },
+              tooltip: "Submit",
+              child: const Icon(Icons.send_outlined),
             )
         ],
       ),

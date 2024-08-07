@@ -8,4 +8,20 @@ class FormPageData {
     required this.pageName,
     required this.questions,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'pageName': pageName,
+      'questions': questions.map((q) => q.toJson()).toList(),
+    };
+  }
+
+  static FormPageData fromJson(Map<String, dynamic> json) {
+    return FormPageData(
+      pageName: json['pageName'],
+      questions: (json['questions'] as List)
+          .map((item) => Question.fromJson(item))
+          .toList(),
+    );
+  }
 }

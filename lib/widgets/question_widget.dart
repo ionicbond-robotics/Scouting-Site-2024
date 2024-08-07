@@ -250,12 +250,12 @@ class QuestionWidgetState extends State<QuestionWidget> {
                 Icons.add_outlined,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 20),
             Text(
               currentValue.toString(),
               textScaler: const TextScaler.linear(1.4),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 20),
             IconButton(
               onPressed: () {
                 setState(() {

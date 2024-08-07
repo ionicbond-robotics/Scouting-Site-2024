@@ -7,7 +7,7 @@ class Question {
   Question({
     required this.type,
     required this.questionText,
-    this.options,
+    this.options = const [],
   }) {
     if (options != null && options!.isNotEmpty) {
       if (type == AnswerType.counter) {
@@ -31,6 +31,42 @@ class Question {
       throw ArgumentError(
         'An enumerated question must have options provided. Options cannot be null.',
       );
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.toString().split('.').last, // Converts enum to string
+      'questionText': questionText,
+      'answer': answer,
+      'options': options,
+    };
+  }
+
+  static Question fromJson(Map<String, dynamic> json) {
+    return Question(
+      type: _stringToAnswerType(json['type']),
+      questionText: json['questionText'],
+      options: json['options']?.cast<dynamic>(),
+    );
+  }
+
+  static AnswerType _stringToAnswerType(String type) {
+    switch (type) {
+      case 'integer':
+        return AnswerType.integer;
+      case 'dropdown':
+        return AnswerType.dropdown;
+      case 'checkbox':
+        return AnswerType.checkbox;
+      case 'multipleChoice':
+        return AnswerType.multipleChoice;
+      case 'text':
+        return AnswerType.text;
+      case 'counter':
+        return AnswerType.counter;
+      default:
+        throw FormatException('Unknown AnswerType: $type');
     }
   }
 }
