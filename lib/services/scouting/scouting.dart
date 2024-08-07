@@ -168,6 +168,7 @@ class Scouting {
       'pages': pagesJson,
       'scouter': scouterName,
       'scouted_on': scoutedTeam,
+      'game': gameNumber,
     };
   }
 
