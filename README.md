@@ -6,8 +6,9 @@ A base scouting site for FTC / FRC (Or any competition alike) teams.
 First off, fork this repository by pressing the [`Fork`](https://github.com/DanPeled/Scouting-Tool/fork) button located on the top of this repository page.
 
 ## Requirements:
-1. [Dart](https://dart.dev/get-dart) & [Flutter](https://docs.flutter.dev/get-started/install) installed.
-2. A [Firebase](https://firebase.google.com/) project with a [Firestore Database](https://firebase.google.com/docs/firestore) & the `web` option configured.
+1. [Dart](https://dart.dev/get-dart) & [Flutter](https://docs.flutter.dev/get-started/install) installed (Recommeneded, not neccessary).
+2. [Git](https://git-scm.com/) installed (or modify from github, but less recommended).
+3. A [Firebase](https://firebase.google.com/) project with a [Firestore Database](https://firebase.google.com/docs/firestore) & the `web` option configured.
 
 ## Setting up your database in-code
 Go to the [`lib/services/database/api.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/database/api.dart) file and modify the following lines to use your firebase project details:
