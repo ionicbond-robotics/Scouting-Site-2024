@@ -9,6 +9,10 @@ class Question {
       required this.questionText,
       this.options = const [],
       this.answer}) {
+    _validateArguments();
+  }
+
+  void _validateArguments() {
     if (options != null && options!.isNotEmpty) {
       if (type == AnswerType.counter) {
         if (options!.length != 3) {
@@ -35,12 +39,33 @@ class Question {
   }
 
   Map<String, dynamic> toJson() {
+    _validateAnswer();
+
     return {
       'type': type.toString().split('.').last, // Converts enum to string
       'questionText': questionText,
       'answer': answer,
       'options': options,
     };
+  }
+
+  void _validateAnswer() {
+    if (type == AnswerType.multipleChoice) {
+      if (answer == null) {
+        answer = <String, dynamic>{};
+        for (Object? option in (options ?? [])) {
+          if (option != null) {
+            (answer! as Map<String, dynamic>)[option.toString()] = false;
+          }
+        }
+      } else {
+        for (String key in (answer as Map<String, dynamic>).keys) {
+          if (!(answer as Map<String, dynamic>).keys.contains(key)) {
+            (answer! as Map<String, dynamic>)[key] = false;
+          }
+        }
+      }
+    }
   }
 
   static Question fromJson(Map<String, dynamic> json) {

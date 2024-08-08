@@ -52,7 +52,13 @@ class Scouting {
           ],
         ),
       ],
-    )
+    ),
+    FormPageData(pageName: "TeleOp", questions: [
+      Question(
+        type: AnswerType.integer,
+        questionText: "baller",
+      ),
+    ]),
   ];
 
   static List<BuildContext> _pagesContexts = [];

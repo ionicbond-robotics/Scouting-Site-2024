@@ -201,14 +201,6 @@ class _SummationPageState extends State<SummationPage> {
               Navigator.of(context).pop();
             },
           ),
-          IconButton(
-            onPressed: () {
-              //todo nagivate to next page
-            },
-            icon: const Icon(Icons.arrow_forward_ios),
-            iconSize: 20,
-            tooltip: "Next",
-          )
         ],
       ),
     );
