@@ -33,13 +33,14 @@ Go to the [`lib/services/scouting/scouting.dart`](https://github.com/DanPeled/Sc
 
 e.g : 
 ```dart
-static List<FormPageData> _pages = [
+static final List<FormPageData> _pages = [
     FormPageData(
       pageName: "Autonomous",
       questions: [
         Question(
           type: AnswerType.text,
           questionText: "Notes amount",
+          evaluation: 2,
         ),
         Question(
           type: AnswerType.dropdown,
@@ -48,10 +49,15 @@ static List<FormPageData> _pages = [
             "Top",
             "Middle",
           ],
+          evaluation: {
+            "Top": 1,
+            "Middle": 2,
+          },
         ),
         Question(
           type: AnswerType.checkbox,
           questionText: "Autonomous?",
+          evaluation: 5,
         ),
         Question(
           type: AnswerType.multipleChoice,
@@ -61,10 +67,16 @@ static List<FormPageData> _pages = [
             "Brocolli",
           ],
           questionText: "How many?",
+          evaluation: {
+            "Yes": 1,
+            "No": 3,
+            "Brocolli": 4,
+          },
         ),
         Question(
           type: AnswerType.number,
           questionText: "Your opinion about canibalism",
+          evaluation: 12,
         ),
         Question(
           type: AnswerType.counter,
@@ -73,9 +85,10 @@ static List<FormPageData> _pages = [
             0, // initial
             0, // min
           ],
+          evaluation: 2,
         ),
       ],
-    )
+    ),
   ];
   ```
 
