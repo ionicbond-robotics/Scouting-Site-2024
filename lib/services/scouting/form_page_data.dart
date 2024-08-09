@@ -24,4 +24,9 @@ class FormPageData {
           .toList(),
     );
   }
+
+  double evaluate() {
+    // for (Question q in questions) {} // TODO
+    return 0;
+  }
 }

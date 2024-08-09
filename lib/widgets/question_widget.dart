@@ -26,6 +26,9 @@ class QuestionWidgetState extends State<QuestionWidget> {
       optionsValues = {};
       if (widget._question.options != null) {
         optionsValues = tryCast(widget._question.answer) ?? {};
+        for (Object? option in widget._question.options!) {
+          optionsValues[option.toString()] = false;
+        }
       } else {
         throw ArgumentError(
           'An enumerated question must have options provided. Options cannot be null.',

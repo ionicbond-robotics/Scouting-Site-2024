@@ -3,12 +3,14 @@ class Question {
   final String questionText;
   Object? answer;
   List<Object?>? options;
+  final Object? evaluation;
 
   Question(
       {required this.type,
       required this.questionText,
       this.options = const [],
-      this.answer}) {
+      this.answer,
+      this.evaluation}) {
     _validateArguments();
   }
 
@@ -46,6 +48,7 @@ class Question {
       'questionText': questionText,
       'answer': answer,
       'options': options,
+      'evaluation': evaluation,
     };
   }
 
@@ -60,7 +63,7 @@ class Question {
         }
       } else {
         for (String key in (answer as Map<String, dynamic>).keys) {
-          if (!(answer as Map<String, dynamic>).keys.contains(key)) {
+          if ((answer! as Map<String, dynamic>)[key] != true) {
             (answer! as Map<String, dynamic>)[key] = false;
           }
         }
@@ -68,11 +71,16 @@ class Question {
     }
   }
 
+  double evaluate() {
+    return 0.0;
+  }
+
   static Question fromJson(Map<String, dynamic> json) {
     return Question(
       type: _stringToAnswerType(json['type']),
       questionText: json['questionText'],
       options: json['options']?.cast<dynamic>(),
+      evaluation: json['evaluation']?.cast<dynamic>() ?? 0,
       answer: json['answer'],
     );
   }
