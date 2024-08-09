@@ -27,8 +27,8 @@ class Scouting {
             "Middle",
           ],
           evaluation: {
-            "Top": 1,
-            "Middle": 2,
+            "Top": 1.0,
+            "Middle": 2.0,
           },
         ),
         Question(
@@ -45,15 +45,15 @@ class Scouting {
           ],
           questionText: "How many?",
           evaluation: {
-            "Yes": 1,
-            "No": 3,
-            "Brocolli": 4,
+            "Yes": 1.0,
+            "No": 3.0,
+            "Brocolli": 4.0,
           },
         ),
         Question(
           type: AnswerType.number,
           questionText: "Your opinion about canibalism",
-          evaluation: 12,
+          evaluation: 12.0,
         ),
         Question(
           type: AnswerType.counter,

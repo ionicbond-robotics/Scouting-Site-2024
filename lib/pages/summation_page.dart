@@ -319,7 +319,8 @@ class _SummationPageState extends State<SummationPage> {
 
       double value2 =
           form2.pages.firstWhere((page) => page.pageName == pageName).score;
-      return value1.compareTo(value2);
+
+      return value2.compareTo(value1);
     });
   }
 
@@ -406,6 +407,6 @@ class _SummationPageState extends State<SummationPage> {
   }
 
   void sortByTotalScore(List<FormData> data) {
-    return data.sort((form1, form2) => form1.score.compareTo(form2.score));
+    return data.sort((form1, form2) => form2.score.compareTo(form1.score));
   }
 }

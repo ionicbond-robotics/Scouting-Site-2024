@@ -84,8 +84,10 @@ class Question {
       case AnswerType.text:
         break;
       case AnswerType.dropdown:
+        res = evaluateDropdown();
+        break;
       case AnswerType.multipleChoice:
-        res = evaluateOptions();
+        res = evaluateMultipleChoice();
         break;
       case AnswerType.checkbox:
         res = (evaluation as num) * ((answer as bool) ? 1.0 : 0.0);
@@ -127,8 +129,21 @@ class Question {
     }
   }
 
-  double evaluateOptions() {
-    return 0.0;
+  double evaluateDropdown() {
+    Map<String, num> valuesMap = evaluation as Map<String, num>;
+    return (valuesMap[answer ?? valuesMap.keys.first] ?? 0.0) as double;
+  }
+
+  double evaluateMultipleChoice() {
+    double res = 0;
+    Map<String, num> valuesMap = evaluation as Map<String, num>;
+
+    for (String option in valuesMap.keys) {
+      res += (((answer as Map<String, bool>)[option] ?? false) ? 1.0 : 0.0) *
+          (valuesMap[option] ?? 0.0);
+    }
+
+    return res;
   }
 }
 
