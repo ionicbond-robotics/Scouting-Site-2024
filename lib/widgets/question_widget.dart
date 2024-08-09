@@ -147,7 +147,11 @@ class QuestionWidgetState extends State<QuestionWidget> {
 
     return DialogTextInput(
       onSubmit: (value) {
-        question.answer = value;
+        if (question.type == AnswerType.integer) {
+          question.answer = int.parse(value);
+        } else if (question.type == AnswerType.number) {
+          question.answer = num.parse(value);
+        }
       },
       label: question.questionText,
       initialText: question.answer?.toString(),

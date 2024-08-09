@@ -3,16 +3,21 @@ class Question {
   final String questionText;
   Object? answer;
   List<Object?>? options;
-  final Object? evaluation;
+  final Object evaluation;
+  final double _score;
 
-  Question(
-      {required this.type,
-      required this.questionText,
-      this.options = const [],
-      this.answer,
-      this.evaluation}) {
+  Question({
+    required this.type,
+    required this.questionText,
+    this.options = const [],
+    this.answer,
+    this.evaluation = 0,
+    score = 0,
+  }) : _score = score {
     _validateArguments();
   }
+
+  double get score => _score;
 
   void _validateArguments() {
     if (options != null && options!.isNotEmpty) {
@@ -49,6 +54,7 @@ class Question {
       'answer': answer,
       'options': options,
       'evaluation': evaluation,
+      'score': evaluate(),
     };
   }
 
@@ -72,7 +78,22 @@ class Question {
   }
 
   double evaluate() {
-    return 0.0;
+    double res = 0;
+
+    switch (type) {
+      case AnswerType.text:
+        break;
+      case AnswerType.dropdown:
+      case AnswerType.multipleChoice:
+        res = evaluateOptions();
+        break;
+      case AnswerType.checkbox:
+        res = (evaluation as num) * ((answer as bool) ? 1.0 : 0.0);
+        break;
+      default:
+        res = (evaluation as double) * (answer as num);
+    }
+    return res;
   }
 
   static Question fromJson(Map<String, dynamic> json) {
@@ -80,8 +101,8 @@ class Question {
       type: _stringToAnswerType(json['type']),
       questionText: json['questionText'],
       options: json['options']?.cast<dynamic>(),
-      evaluation: json['evaluation']?.cast<dynamic>() ?? 0,
       answer: json['answer'],
+      score: json['score'] as double,
     );
   }
 
@@ -104,6 +125,10 @@ class Question {
       default:
         throw FormatException('Unknown AnswerType: $type');
     }
+  }
+
+  double evaluateOptions() {
+    return 0.0;
   }
 }
 

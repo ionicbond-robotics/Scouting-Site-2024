@@ -17,6 +17,7 @@ class Scouting {
         Question(
           type: AnswerType.text,
           questionText: "Notes amount",
+          evaluation: 2,
         ),
         Question(
           type: AnswerType.dropdown,
@@ -25,10 +26,15 @@ class Scouting {
             "Top",
             "Middle",
           ],
+          evaluation: {
+            "Top": 1,
+            "Middle": 2,
+          },
         ),
         Question(
           type: AnswerType.checkbox,
           questionText: "Autonomous?",
+          evaluation: 5,
         ),
         Question(
           type: AnswerType.multipleChoice,
@@ -38,10 +44,16 @@ class Scouting {
             "Brocolli",
           ],
           questionText: "How many?",
+          evaluation: {
+            "Yes": 1,
+            "No": 3,
+            "Brocolli": 4,
+          },
         ),
         Question(
           type: AnswerType.number,
           questionText: "Your opinion about canibalism",
+          evaluation: 12,
         ),
         Question(
           type: AnswerType.counter,
@@ -50,15 +62,10 @@ class Scouting {
             0, // initial
             0, // min
           ],
+          evaluation: 2,
         ),
       ],
     ),
-    FormPageData(pageName: "TeleOp", questions: [
-      Question(
-        type: AnswerType.integer,
-        questionText: "baller",
-      ),
-    ]),
   ];
 
   static List<BuildContext> _pagesContexts = [];
@@ -176,6 +183,7 @@ class Scouting {
       'scouter': data.scouter,
       'scouted_on': data.scoutedTeam,
       'game': data.game,
+      'score': data.evaluate(),
     };
   }
 

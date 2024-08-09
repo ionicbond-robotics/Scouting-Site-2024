@@ -28,6 +28,9 @@ class _SummationPageState extends State<SummationPage> {
     getDocuments();
 
     switch (_sortBy) {
+      case "total_score":
+        sortByTotalScore(_formsData);
+        break;
       case "game":
         sortByGame(_formsData);
         break;
@@ -78,9 +81,14 @@ class _SummationPageState extends State<SummationPage> {
                         label: Expanded(
                           child: Row(
                             children: [
-                              const Text(
+                              Text(
                                 "Scouter",
-                                style: TextStyle(fontStyle: FontStyle.italic),
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: (_sortBy == "scouter")
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
                               ),
                               IconButton(
                                   onPressed: () {
@@ -97,9 +105,14 @@ class _SummationPageState extends State<SummationPage> {
                         label: Expanded(
                           child: Row(
                             children: [
-                              const Text(
+                              Text(
                                 "Team",
-                                style: TextStyle(fontStyle: FontStyle.italic),
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: (_sortBy == "team")
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
                               ),
                               IconButton(
                                   onPressed: () {
@@ -116,9 +129,14 @@ class _SummationPageState extends State<SummationPage> {
                         label: Expanded(
                           child: Row(
                             children: [
-                              const Text(
+                              Text(
                                 "Game",
-                                style: TextStyle(fontStyle: FontStyle.italic),
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: (_sortBy == "game")
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
                               ),
                               IconButton(
                                   onPressed: () {
@@ -296,14 +314,11 @@ class _SummationPageState extends State<SummationPage> {
 
   void sortByPage(List<FormData> formsData, String pageName) {
     formsData.sort((form1, form2) {
-      double value1 = form1.pages
-          .firstWhere((page) => page.pageName == pageName)
-          .evaluate();
+      double value1 =
+          form1.pages.firstWhere((page) => page.pageName == pageName).score;
 
-      double value2 = form2.pages
-          .firstWhere((page) => page.pageName == pageName)
-          .evaluate();
-
+      double value2 =
+          form2.pages.firstWhere((page) => page.pageName == pageName).score;
       return value1.compareTo(value2);
     });
   }
@@ -320,7 +335,12 @@ class _SummationPageState extends State<SummationPage> {
                 children: [
                   Text(
                     page.pageName,
-                    style: const TextStyle(fontStyle: FontStyle.italic),
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: (_sortBy == page.pageName)
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
                   ),
                   IconButton(
                       onPressed: () {
@@ -340,14 +360,18 @@ class _SummationPageState extends State<SummationPage> {
       label: Expanded(
         child: Row(
           children: [
-            const Text(
+            Text(
               "Total Score",
-              style: TextStyle(fontStyle: FontStyle.italic),
+              style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontWeight: (_sortBy == "total_score")
+                      ? FontWeight.bold
+                      : FontWeight.normal),
             ),
             IconButton(
                 onPressed: () {
                   setState(() {
-                    // _sortBy = "total_score";
+                    _sortBy = "total_score";
                   });
                 },
                 icon: const Icon(Icons.sort_outlined))
@@ -367,7 +391,7 @@ class _SummationPageState extends State<SummationPage> {
     for (FormPageData page in data) {
       if (pageNames.contains(page.pageName)) {
         if (data.map((page_) => page_.pageName).contains(page.pageName)) {
-          double score = page.evaluate();
+          double score = page.score;
           cells.add(DataCell(Text(score.toString())));
           totalScore += score;
         } else {
@@ -379,5 +403,9 @@ class _SummationPageState extends State<SummationPage> {
     cells.add(DataCell(Text(totalScore.toString())));
 
     return cells;
+  }
+
+  void sortByTotalScore(List<FormData> data) {
+    return data.sort((form1, form2) => form1.score.compareTo(form2.score));
   }
 }
