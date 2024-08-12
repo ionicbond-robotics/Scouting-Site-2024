@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:scouting_site/pages/averages_page.dart';
 import 'package:scouting_site/services/database/api.dart';
 import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
@@ -9,24 +8,32 @@ import 'package:scouting_site/services/scouting/scouting.dart';
 import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 
-class SummationPage extends StatefulWidget {
-  const SummationPage({super.key});
+class AveragesPage extends StatefulWidget {
+  final List<FormData>? formsData;
+
+  const AveragesPage({super.key, this.formsData});
 
   @override
-  State<StatefulWidget> createState() => _SummationPageState();
+  State<StatefulWidget> createState() => _AveragesPageState();
 }
 
-class _SummationPageState extends State<SummationPage> {
+class _AveragesPageState extends State<AveragesPage> {
   List<FormData> _formsData = [];
 
   Map<int, Map<String, List<FormData>>> gamesDataMap =
       {}; // Game |-> (Team |-> entries)
 
-  String _sortBy = "game";
+  String _sortBy = "total_score";
 
   @override
   Widget build(BuildContext context) {
-    getDocuments();
+    if (widget.formsData == null) {
+      getDocuments();
+    } else {
+      _formsData = widget.formsData!;
+    }
+
+    _formsData = calculateAvgs(_formsData).values.toList();
 
     switch (_sortBy) {
       case "total_score":
@@ -34,9 +41,6 @@ class _SummationPageState extends State<SummationPage> {
         break;
       case "game":
         sortByGame(_formsData);
-        break;
-      case "scouter":
-        sortByScouter(_formsData);
         break;
       case "team":
         sortByTeam(_formsData);
@@ -56,7 +60,7 @@ class _SummationPageState extends State<SummationPage> {
         ),
         backgroundColor: Colors.black,
         title: const Text(
-          "Summation",
+          "Averages",
           style: TextStyle(
             color: GlobalColors.teamColor,
           ),
@@ -83,31 +87,6 @@ class _SummationPageState extends State<SummationPage> {
                           child: Row(
                             children: [
                               Text(
-                                "Scouter",
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: (_sortBy == "scouter")
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _sortBy = "scouter";
-                                    });
-                                  },
-                                  tooltip: "Sort by Scouter",
-                                  icon: const Icon(Icons.sort_outlined))
-                            ],
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Row(
-                            children: [
-                              Text(
                                 "Team",
                                 style: TextStyle(
                                   fontStyle: FontStyle.italic,
@@ -128,31 +107,6 @@ class _SummationPageState extends State<SummationPage> {
                           ),
                         ),
                       ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Row(
-                            children: [
-                              Text(
-                                "Game",
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: (_sortBy == "game")
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _sortBy = "game";
-                                    });
-                                  },
-                                  tooltip: "Sort by Game",
-                                  icon: const Icon(Icons.sort_outlined))
-                            ],
-                          ),
-                        ),
-                      ),
                       ...getPagesDataColumns(_formsData),
                       const DataColumn(
                         label: Text("Actions"),
@@ -166,21 +120,19 @@ class _SummationPageState extends State<SummationPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AveragesPage(
-                formsData: _formsData,
-              ),
-            ),
-          );
-        },
-        tooltip: "Averages",
-        child: const Icon(Icons.pie_chart),
-      ),
     );
+  }
+
+  void sortByTeam(List<FormData> formsData) {
+    formsData.sort((form1, form2) {
+      String scouter1 = form1.scoutedTeam ?? "";
+      String scouter2 = form2.scoutedTeam ?? "";
+
+      int number1 = extractNumber(scouter1);
+      int number2 = extractNumber(scouter2);
+
+      return number1.compareTo(number2);
+    });
   }
 
   void _handleBackButton() {
@@ -209,9 +161,7 @@ class _SummationPageState extends State<SummationPage> {
     List<DataRow> rows = [];
     for (FormData form in _formsData) {
       rows.add(DataRow(cells: [
-        DataCell(Text(form.scouter ?? "")),
         DataCell(Text(form.scoutedTeam ?? "")),
-        DataCell(Text(form.game?.toString() ?? "0")),
         ...getPagesDataRows(pages: _formsData.first.pages, data: form.pages),
         DataCell(
           Row(
@@ -307,18 +257,6 @@ class _SummationPageState extends State<SummationPage> {
     });
   }
 
-  void sortByTeam(List<FormData> formsData) {
-    formsData.sort((form1, form2) {
-      String scouter1 = form1.scoutedTeam ?? "";
-      String scouter2 = form2.scoutedTeam ?? "";
-
-      int number1 = extractNumber(scouter1);
-      int number2 = extractNumber(scouter2);
-
-      return number1.compareTo(number2);
-    });
-  }
-
   int extractNumber(String scoutedTeam) {
     // Split by the '#' character and parse the number
 
@@ -353,7 +291,7 @@ class _SummationPageState extends State<SummationPage> {
               child: Row(
                 children: [
                   Text(
-                    page.pageName,
+                    "${page.pageName} Avg.",
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: (_sortBy == page.pageName)
@@ -381,7 +319,7 @@ class _SummationPageState extends State<SummationPage> {
         child: Row(
           children: [
             Text(
-              "Total Score",
+              "Avg. Total Score",
               style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontWeight: (_sortBy == "total_score")
@@ -394,7 +332,7 @@ class _SummationPageState extends State<SummationPage> {
                     _sortBy = "total_score";
                   });
                 },
-                tooltip: "Sort by Total Score",
+                tooltip: "Sort by Avg. Score",
                 icon: const Icon(Icons.sort_outlined))
           ],
         ),
@@ -428,5 +366,62 @@ class _SummationPageState extends State<SummationPage> {
 
   void sortByTotalScore(List<FormData> data) {
     data.sort((form1, form2) => form2.score.compareTo(form1.score));
+  }
+
+  Map<String, FormData> calculateAvgs(List<FormData> formsData) {
+    // Maps to accumulate total scores and counts
+    Map<String, List<FormData>> teamsDatas = {};
+    Map<String, Map<String, double>> pagesTotalScores = {};
+    Map<String, Map<String, int>> pagesCounts = {};
+    Map<String, double> totalScores = {};
+    Map<String, int> formCounts = {};
+
+    // Organize forms data by team and accumulate scores
+    for (var form in formsData) {
+      final team = form.scoutedTeam!;
+      teamsDatas.putIfAbsent(team, () => []).add(form);
+      totalScores.update(team, (total) => total + form.score,
+          ifAbsent: () => form.score);
+      formCounts.update(team, (count_) => count_ + 1, ifAbsent: () => 1);
+
+      for (var page in form.pages) {
+        pagesTotalScores.putIfAbsent(team, () => {});
+        pagesCounts.putIfAbsent(team, () => {});
+
+        pagesTotalScores[team]!.update(
+            page.pageName, (sum_) => sum_ + page.score,
+            ifAbsent: () => page.score);
+        pagesCounts[team]!
+            .update(page.pageName, (count_) => count_ + 1, ifAbsent: () => 1);
+      }
+    }
+
+    // Calculate averages for each team
+    Map<String, FormData> teamAvgs = {};
+    for (var team in teamsDatas.keys) {
+      final totalForms = formCounts[team]!;
+      final avgTotal = totalScores[team]! / totalForms;
+
+      // Calculate average scores for each page
+      Map<String, double> pagesAvgs = {};
+      pagesTotalScores[team]!.forEach((pageName, totalScore) {
+        pagesAvgs[pageName] = totalScore / pagesCounts[team]![pageName]!;
+      });
+
+      // Create the list of FormPageData with average scores
+      List<FormPageData> pagesAvgsList = pagesAvgs.entries.map((entry) {
+        return FormPageData(
+            pageName: entry.key, questions: [], score: entry.value);
+      }).toList();
+
+      teamAvgs[team] = FormData(
+        pages: pagesAvgsList,
+        scouter: "",
+        score: avgTotal,
+        scoutedTeam: team,
+      );
+    }
+
+    return teamAvgs;
   }
 }
