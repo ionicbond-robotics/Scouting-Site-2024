@@ -45,6 +45,18 @@ class _HomePageState extends State<HomePage> {
     "Bumblebee #3399",
   ];
 
+  final _scouterController = TextEditingController();
+  final _gameController = TextEditingController();
+  String? _selectedTeam;
+
+  @override
+  void initState() {
+    super.initState();
+    _scouterController.text = Scouting.data.scouter ?? '';
+    _gameController.text = Scouting.data.game?.toString() ?? '';
+    _selectedTeam = Scouting.data.scoutedTeam;
+  }
+
   @override
   Widget build(BuildContext context) {
     teams.sort((a, b) {
@@ -72,6 +84,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 5),
             DialogTextInput(
               label: "Scouter name",
+              textEditingController: _scouterController,
               onSubmit: (value) {
                 Scouting.data.scouter = value;
               },
@@ -80,8 +93,12 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 5),
             DropdownMenu(
               label: const Text("Scouting On"),
+              initialSelection: Scouting.data.scoutedTeam,
               onSelected: (value) {
-                Scouting.data.scoutedTeam = value.toString();
+                setState(() {
+                  _selectedTeam = value.toString();
+                  Scouting.data.scoutedTeam = _selectedTeam;
+                });
               },
               dropdownMenuEntries: getTeamDropdownEntries(),
               width: MediaQuery.of(context).size.width - 5,
@@ -89,10 +106,10 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 5),
             DialogTextInput(
               onSubmit: (value) {
-                Scouting.data.game = int.parse(value);
+                Scouting.data.game = int.tryParse(value);
               },
               label: "Game #",
-              initialText: Scouting.data.game?.toString(),
+              textEditingController: _gameController,
               formatter: TextFormatterBuilder.integerTextFormatter(),
             )
           ],
@@ -127,11 +144,38 @@ class _HomePageState extends State<HomePage> {
                 tooltip: "Scout",
                 child: const Icon(Icons.login_outlined),
                 onPressed: () async {
-                  localStorage?.setInt("game", Scouting.data.game ?? 0);
-                  localStorage?.setString(
-                      "scouter", Scouting.data.scouter ?? "");
-                  localStorage?.setString(
-                      "scoutedTeam", Scouting.data.scoutedTeam ?? "");
+                  final scouterName = _scouterController.text.trim();
+                  final gameNumber = _gameController.text.trim();
+
+                  if (scouterName.isEmpty ||
+                      _selectedTeam == null ||
+                      gameNumber.isEmpty) {
+                    // Show an alert if any required field is empty
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Validation Error'),
+                          content:
+                              const Text('Please fill in all required fields.'),
+                          actions: [
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    return;
+                  }
+
+                  // Save the data if all fields are filled
+                  localStorage?.setInt("game", int.parse(gameNumber));
+                  localStorage?.setString("scouter", scouterName);
+                  localStorage?.setString("scoutedTeam", _selectedTeam ?? "");
 
                   Scouting.advance(context);
                 },
