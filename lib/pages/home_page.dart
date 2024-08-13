@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:scouting_site/pages/summation_page.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/localstorage.dart';
@@ -11,11 +12,18 @@ class ScoutingSite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var brightness =
+        SchedulerBinding.instance.platformDispatcher.platformBrightness;
+
+    bool isDarkMode = brightness == Brightness.dark;
+    GlobalColors.primaryColor = isDarkMode ? Colors.black : Colors.white;
+
     return MaterialApp(
       title: 'Scouting Site',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        primaryColor: GlobalColors.primaryColor,
+        brightness: isDarkMode ? Brightness.dark : Brightness.light,
         useMaterial3: true,
       ),
       home: const HomePage(title: 'FRC-Scouting'),
@@ -51,14 +59,14 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: GlobalColors.appBarColor,
         title: Text(
           widget.title,
           style: const TextStyle(color: GlobalColors.teamColor),
         ),
       ),
       body: Container(
-        color: const Color.fromARGB(255, 255, 255, 255),
+        color: GlobalColors.backgroundColor,
         child: Column(
           children: [
             const SizedBox(height: 5),

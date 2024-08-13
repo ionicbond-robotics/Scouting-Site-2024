@@ -52,9 +52,9 @@ class _SummationPageState extends State<SummationPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: _handleBackButton,
           tooltip: "Back",
-          color: Colors.white,
+          color: GlobalColors.backButtonColor,
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: GlobalColors.appBarColor,
         title: const Text(
           "Summation",
           style: TextStyle(
@@ -64,7 +64,7 @@ class _SummationPageState extends State<SummationPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white,
+          color: GlobalColors.backgroundColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

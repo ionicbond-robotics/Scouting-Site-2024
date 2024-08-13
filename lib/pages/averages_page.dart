@@ -56,9 +56,9 @@ class _AveragesPageState extends State<AveragesPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: _handleBackButton,
           tooltip: "Back",
-          color: Colors.white,
+          color: GlobalColors.backButtonColor,
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: GlobalColors.appBarColor,
         title: const Text(
           "Averages",
           style: TextStyle(
@@ -68,7 +68,7 @@ class _AveragesPageState extends State<AveragesPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white,
+          color: GlobalColors.backgroundColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

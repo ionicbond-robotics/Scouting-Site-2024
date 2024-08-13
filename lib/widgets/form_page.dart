@@ -22,9 +22,9 @@ class _FormPageState extends State<FormPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: _handleBackButton,
           tooltip: "Back",
-          color: Colors.white,
+          color: GlobalColors.backButtonColor,
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: GlobalColors.appBarColor,
         title: Text(
           widget.data.pageName,
           style: const TextStyle(color: GlobalColors.teamColor),
@@ -32,7 +32,7 @@ class _FormPageState extends State<FormPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white,
+          color: GlobalColors.backgroundColor,
           child: Column(
             children: getQuestionWidgets(),
           ),
