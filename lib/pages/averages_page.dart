@@ -63,6 +63,7 @@ class _AveragesPageState extends State<AveragesPage> {
           "Averages",
           style: TextStyle(
             color: GlobalColors.teamColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

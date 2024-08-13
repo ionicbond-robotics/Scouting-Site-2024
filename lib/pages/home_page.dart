@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 import 'package:scouting_site/pages/summation_page.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/localstorage.dart';
@@ -74,7 +75,10 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: GlobalColors.appBarColor,
         title: Text(
           widget.title,
-          style: const TextStyle(color: GlobalColors.teamColor),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: GlobalColors.teamColor,
+          ),
         ),
       ),
       body: Container(

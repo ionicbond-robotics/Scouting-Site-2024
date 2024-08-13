@@ -59,6 +59,7 @@ class _SummationPageState extends State<SummationPage> {
           "Summation",
           style: TextStyle(
             color: GlobalColors.teamColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

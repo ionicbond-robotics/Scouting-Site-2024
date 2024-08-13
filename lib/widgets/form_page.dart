@@ -27,7 +27,10 @@ class _FormPageState extends State<FormPage> {
         backgroundColor: GlobalColors.appBarColor,
         title: Text(
           widget.data.pageName,
-          style: const TextStyle(color: GlobalColors.teamColor),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: GlobalColors.teamColor,
+          ),
         ),
       ),
       body: SingleChildScrollView(
