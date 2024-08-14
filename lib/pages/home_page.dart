@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:scouting_site/pages/summation_page.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/localstorage.dart';
+import 'package:scouting_site/services/scouting/helper_methods.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
 import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
@@ -61,10 +61,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     teams.sort((a, b) {
-      final int? teamNumberA = _extractTeamNumber(a);
-      final int? teamNumberB = _extractTeamNumber(b);
+      final int teamNumberA = extractNumber(a);
+      final int teamNumberB = extractNumber(b);
 
-      if (teamNumberA == null || teamNumberB == null) {
+      if (teamNumberA == 0 || teamNumberB == 0) {
         return 0; // Handle cases where the team number cannot be extracted
       }
       return teamNumberA.compareTo(teamNumberB);
@@ -200,16 +200,5 @@ class _HomePageState extends State<HomePage> {
     }
 
     return entries;
-  }
-
-  int? _extractTeamNumber(String team) {
-    final RegExp regExp = RegExp(r'#(\d+)$');
-    final match = regExp.firstMatch(team);
-
-    if (match != null && match.groupCount > 0) {
-      return int.tryParse(match.group(1) ?? '');
-    }
-
-    return null;
   }
 }

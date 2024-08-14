@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:scouting_site/services/database/api.dart';
+import 'package:scouting_site/services/firebase/firebase_api.dart';
 import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
+import 'package:scouting_site/services/scouting/helper_methods.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
 import 'package:scouting_site/theme.dart';
@@ -20,10 +21,8 @@ class AveragesPage extends StatefulWidget {
 class _AveragesPageState extends State<AveragesPage> {
   List<FormData> _formsData = [];
 
-  Map<int, Map<String, List<FormData>>> gamesDataMap =
-      {}; // Game |-> (Team |-> entries)
-
   String _sortBy = "total_score";
+  Map<String, dynamic> _searchQueryMap = {};
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +48,7 @@ class _AveragesPageState extends State<AveragesPage> {
         sortByPage(_formsData, _sortBy);
         break;
     }
-
+    _formsData = handleSearchQuery(_formsData, _searchQueryMap);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -75,7 +74,11 @@ class _AveragesPageState extends State<AveragesPage> {
             children: [
               const SizedBox(height: 5),
               DialogTextInput(
-                onSubmit: (value) {},
+                onSubmit: (value) {
+                  setState(() {
+                    _searchQueryMap = evaluateSearchQuery(value);
+                  });
+                },
                 label: "Search",
               ),
               Row(
@@ -256,17 +259,6 @@ class _AveragesPageState extends State<AveragesPage> {
       String scouter2 = form2.scouter ?? "";
       return scouter1.compareTo(scouter2);
     });
-  }
-
-  int extractNumber(String scoutedTeam) {
-    // Split by the '#' character and parse the number
-
-    List<String> parts = scoutedTeam.split('#');
-    if (parts.length > 1) {
-      return int.tryParse(parts[1].trim()) ?? 0;
-    }
-
-    return 0; // Return 0 if the format is incorrect or parsing fails
   }
 
   void sortByPage(List<FormData> formsData, String pageName) {

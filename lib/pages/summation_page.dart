@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scouting_site/pages/averages_page.dart';
-import 'package:scouting_site/services/database/api.dart';
+import 'package:scouting_site/services/firebase/firebase_api.dart';
 import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
+import 'package:scouting_site/services/scouting/helper_methods.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
 import 'package:scouting_site/theme.dart';
@@ -23,10 +24,11 @@ class _SummationPageState extends State<SummationPage> {
       {}; // Game |-> (Team |-> entries)
 
   String _sortBy = "game";
-
+  Map<String, dynamic> _searchQuery = {};
   @override
   Widget build(BuildContext context) {
     getDocuments();
+    _formsData = handleSearchQuery(_formsData, _searchQuery);
 
     switch (_sortBy) {
       case "total_score":
@@ -71,7 +73,11 @@ class _SummationPageState extends State<SummationPage> {
             children: [
               const SizedBox(height: 5),
               DialogTextInput(
-                onSubmit: (value) {},
+                onSubmit: (value) {
+                  setState(() {
+                    _searchQuery = evaluateSearchQuery(value);
+                  });
+                },
                 label: "Search",
               ),
               Row(
@@ -318,17 +324,6 @@ class _SummationPageState extends State<SummationPage> {
 
       return number1.compareTo(number2);
     });
-  }
-
-  int extractNumber(String scoutedTeam) {
-    // Split by the '#' character and parse the number
-
-    List<String> parts = scoutedTeam.split('#');
-    if (parts.length > 1) {
-      return int.tryParse(parts[1].trim()) ?? 0;
-    }
-
-    return 0; // Return 0 if the format is incorrect or parsing fails
   }
 
   void sortByPage(List<FormData> formsData, String pageName) {
