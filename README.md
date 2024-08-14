@@ -11,7 +11,7 @@ First off, fork this repository by pressing the [`Fork`](https://github.com/DanP
 3. A [Firebase](https://firebase.google.com/) project with a [Firestore Database](https://firebase.google.com/docs/firestore) & the `web` option configured.
 
 ## Setting up your database in-code
-Go to the [`lib/services/database/api.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/database/api.dart) file and modify the following lines to use your firebase project details:
+Go to the [`lib/services/firebase/firebase_api.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/firebase/firebase_api.dart) file and modify the following lines to use your firebase project details:
 ```dart
 Future<void> initialize() async {
     // ...
@@ -106,6 +106,6 @@ Or if im looking for all the entries of team `9738` ill do `team:9738`.
 | Total Score | `score` |
 | Form Page | `pageName in lowercase` |
 
-* this list can be extended through the `handleSearchQuery` function on the `lib/services/scouting/helper_methods.dart` file
+* this list can be extended through the `handleSearchQuery` function on the [`lib/services/scouting/helper_methods.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/scouting/helper_methods.dart) file
 # Documentation
 ...
