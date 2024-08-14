@@ -100,7 +100,7 @@ Or if im looking for all the entries of team `9738` ill do `team:9738`.
 ## Supported Search Keys
 |   Name    | Search key |
 |  -------- |  --------  |
-| Team | `team` |
+| Team (number only) | `team` |
 | Game | `game` |
 | Scouter | `scouter` |
 | Total Score | `score` |
