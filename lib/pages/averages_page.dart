@@ -81,44 +81,47 @@ class _AveragesPageState extends State<AveragesPage> {
                 },
                 label: "Search",
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  DataTable(
-                    columns: [
-                      DataColumn(
-                        label: Expanded(
-                          child: Row(
-                            children: [
-                              Text(
-                                "Team",
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: (_sortBy == "team")
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    DataTable(
+                      columns: [
+                        DataColumn(
+                          label: Expanded(
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Team",
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: (_sortBy == "team")
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
                                 ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _sortBy = "team";
-                                    });
-                                  },
-                                  tooltip: "Sort by Team",
-                                  icon: const Icon(Icons.sort_outlined))
-                            ],
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _sortBy = "team";
+                                      });
+                                    },
+                                    tooltip: "Sort by Team",
+                                    icon: const Icon(Icons.sort_outlined))
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      ...getPagesDataColumns(_formsData),
-                      const DataColumn(
-                        label: Text("Actions"),
-                      ),
-                    ],
-                    rows: getDataTableRows(),
-                  ),
-                ],
+                        ...getPagesDataColumns(_formsData),
+                        const DataColumn(
+                          label: Text("Actions"),
+                        ),
+                      ],
+                      rows: getDataTableRows(),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -172,8 +175,8 @@ class _AveragesPageState extends State<AveragesPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.expand_more),
-                tooltip: "Answers",
+                icon: const Icon(Icons.remove_red_eye_rounded),
+                tooltip: "Team Overview",
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -307,30 +310,32 @@ class _AveragesPageState extends State<AveragesPage> {
         );
       }
     }
-    columns.add(DataColumn(
-      label: Expanded(
-        child: Row(
-          children: [
-            Text(
-              "Avg. Total Score",
-              style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontWeight: (_sortBy == "total_score")
-                      ? FontWeight.bold
-                      : FontWeight.normal),
-            ),
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    _sortBy = "total_score";
-                  });
-                },
-                tooltip: "Sort by Avg. Score",
-                icon: const Icon(Icons.sort_outlined))
-          ],
+    columns.add(
+      DataColumn(
+        label: Expanded(
+          child: Row(
+            children: [
+              Text(
+                "Total Avg.",
+                style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: (_sortBy == "total_score")
+                        ? FontWeight.bold
+                        : FontWeight.normal),
+              ),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _sortBy = "total_score";
+                    });
+                  },
+                  tooltip: "Sort by Avg. Score",
+                  icon: const Icon(Icons.sort_outlined))
+            ],
+          ),
         ),
       ),
-    ));
+    );
 
     return columns;
   }

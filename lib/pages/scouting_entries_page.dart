@@ -10,18 +10,19 @@ import 'package:scouting_site/services/scouting/scouting.dart';
 import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 
-class SummationPage extends StatefulWidget {
-  const SummationPage({super.key});
+class ScoutingEntriesPage extends StatefulWidget {
+  const ScoutingEntriesPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SummationPageState();
+  State<StatefulWidget> createState() => _ScoutingEntriesPageState();
 }
 
-class _SummationPageState extends State<SummationPage> {
+class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
   List<FormData> _formsData = [];
 
   Map<int, Map<String, List<FormData>>> gamesDataMap =
       {}; // Game |-> (Team |-> entries)
+  bool _showScouterField = false;
 
   String _sortBy = "game";
   Map<String, dynamic> _searchQuery = {};
@@ -58,7 +59,7 @@ class _SummationPageState extends State<SummationPage> {
         ),
         backgroundColor: GlobalColors.appBarColor,
         title: const Text(
-          "Summation",
+          "Scouting Entries",
           style: TextStyle(
             color: GlobalColors.teamColor,
             fontWeight: FontWeight.bold,
@@ -80,112 +81,133 @@ class _SummationPageState extends State<SummationPage> {
                 },
                 label: "Search",
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  DataTable(
-                    columns: [
-                      DataColumn(
-                        label: Expanded(
-                          child: Row(
-                            children: [
-                              Text(
-                                "Scouter",
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: (_sortBy == "scouter")
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DataTable(
+                      columns: [
+                        if (_showScouterField)
+                          DataColumn(
+                            label: Expanded(
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Scouter",
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                      fontWeight: (_sortBy == "scouter")
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _sortBy = "scouter";
+                                        });
+                                      },
+                                      tooltip: "Sort by Scouter",
+                                      icon: const Icon(Icons.sort_outlined))
+                                ],
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _sortBy = "scouter";
-                                    });
-                                  },
-                                  tooltip: "Sort by Scouter",
-                                  icon: const Icon(Icons.sort_outlined))
-                            ],
+                            ),
+                          ),
+                        DataColumn(
+                          label: Expanded(
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Team",
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: (_sortBy == "team")
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _sortBy = "team";
+                                      });
+                                    },
+                                    tooltip: "Sort by Team",
+                                    icon: const Icon(Icons.sort_outlined))
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Row(
-                            children: [
-                              Text(
-                                "Team",
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: (_sortBy == "team")
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
+                        DataColumn(
+                          label: Expanded(
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Game",
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: (_sortBy == "game")
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
                                 ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _sortBy = "team";
-                                    });
-                                  },
-                                  tooltip: "Sort by Team",
-                                  icon: const Icon(Icons.sort_outlined))
-                            ],
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _sortBy = "game";
+                                      });
+                                    },
+                                    tooltip: "Sort by Game",
+                                    icon: const Icon(Icons.sort_outlined))
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                          child: Row(
-                            children: [
-                              Text(
-                                "Game",
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: (_sortBy == "game")
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _sortBy = "game";
-                                    });
-                                  },
-                                  tooltip: "Sort by Game",
-                                  icon: const Icon(Icons.sort_outlined))
-                            ],
-                          ),
+                        ...getPagesDataColumns(_formsData),
+                        const DataColumn(
+                          label: Text("Actions"),
                         ),
-                      ),
-                      ...getPagesDataColumns(_formsData),
-                      const DataColumn(
-                        label: Text("Actions"),
-                      ),
-                    ],
-                    rows: getDataTableRows(),
-                  ),
-                ],
+                      ],
+                      rows: getDataTableRows(),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AveragesPage(
-                formsData: _formsData,
-              ),
-            ),
-          );
-        },
-        tooltip: "Averages",
-        child: const Icon(Icons.pie_chart),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _showScouterField = !_showScouterField;
+              });
+            },
+            icon: _showScouterField
+                ? const Icon(Icons.south_west_rounded)
+                : const Icon(Icons.hide_source_outlined),
+            tooltip: "${_showScouterField ? "Hide" : "Show"} Scouter Name",
+          ),
+          const SizedBox(width: 12),
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AveragesPage(
+                    formsData: _formsData,
+                  ),
+                ),
+              );
+            },
+            tooltip: "Averages",
+            child: const Icon(Icons.pie_chart),
+          ),
+        ],
       ),
     );
   }
@@ -216,7 +238,7 @@ class _SummationPageState extends State<SummationPage> {
     List<DataRow> rows = [];
     for (FormData form in _formsData) {
       rows.add(DataRow(cells: [
-        DataCell(Text(form.scouter ?? "")),
+        if (_showScouterField) DataCell(Text(form.scouter ?? "")),
         DataCell(Text(form.scoutedTeam ?? "")),
         DataCell(Text(form.game?.toString() ?? "0")),
         ...getPagesDataRows(pages: _formsData.first.pages, data: form.pages),
