@@ -95,7 +95,7 @@ static final List<FormPageData> _pages = [
 On the `Summation` and `Averages` pages, exists a search bar that allows to search for specific entries in a simple way.
 E.g If im looking for any team that has a score of 12 on the `autonomous` page, ill enter `autonomous:12`.
 
-Or if im looking for all the entries of team `9738` ill do `team:9738`.  
+Or if im looking for all the entries of team `9738` from game # `12` ill do `team:9738, game:12`.  
 
 ## Supported Search Keys
 |   Name    | Search key |
