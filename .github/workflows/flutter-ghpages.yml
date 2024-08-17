@@ -5,12 +5,13 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+
 env:
   FLUTTER_VERSION: 3.4.3
-  
+
 jobs:
-   test:
-    name: "Run Tests"
+  build-and-deploy:
+    name: "Build and Deploy to GitHub Pages"
     runs-on: ubuntu-latest
 
     steps:
@@ -32,3 +33,12 @@ jobs:
 
       - name: Run tests
         run: flutter test --coverage
+
+      - name: Build Flutter Web
+        run: flutter build web --release
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
