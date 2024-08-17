@@ -104,7 +104,7 @@ Or if im looking for all the entries of team `9738` from game # `12` ill do `tea
 | Game | `game` |
 | Scouter | `scouter` |
 | Total Score | `score` |
-| Form Page | `pageName in lowercase` |
+| Form Page | `pageName` |
 
 * this list can be extended through the `handleSearchQuery` function on the [`lib/services/scouting/helper_methods.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/scouting/helper_methods.dart) file
 # Documentation
