@@ -6,25 +6,49 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:scouting_site/pages/home_page.dart';
+import 'package:scouting_site/theme.dart';
+import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const ScoutingSite());
+  testWidgets("Form Login", (WidgetTester widgetTester) async {
+    var brightness =
+        SchedulerBinding.instance.platformDispatcher.platformBrightness;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    bool isDarkMode = brightness == Brightness.dark;
+    GlobalColors.primaryColor = isDarkMode ? Colors.black : Colors.white;
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    widgetTester.pumpWidget(
+      MaterialApp(
+        title: 'Scouting Site',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: GlobalColors.primaryColor,
+          brightness: isDarkMode ? Brightness.dark : Brightness.light,
+          useMaterial3: true,
+        ),
+        home: const HomePage(title: 'FRC-Scouting'),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    final scouterNameField =
+        find.widgetWithText(DialogTextInput, "Scouter name");
+
+    expect(scouterNameField, findsOneWidget);
+
+    await widgetTester.enterText(scouterNameField, "Tester");
+    await widgetTester.testTextInput.receiveAction(TextInputAction.done);
+    await widgetTester.pumpAndSettle();
+
+    final scoutingOnTeamField =
+        find.widgetWithText(DropdownMenu, "Scouting On");
+
+    expect(scoutingOnTeamField, findsOneWidget);
+
+    final gameField = find.widgetWithText(DialogTextInput, "Game #");
+    expect(gameField, findsOneWidget);
   });
 }
