@@ -5,6 +5,7 @@ import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_toggle_switch.dart';
+import 'package:scouting_site/widgets/questions_widgets/multiplechoice_widget.dart';
 
 class QuestionWidget extends StatefulWidget {
   final Question _question;
@@ -77,67 +78,20 @@ class QuestionWidgetState extends State<QuestionWidget> {
     }
   }
 
-  Column generateMultipleChoice(Question question) {
-    List<Widget> entries = [];
-
-    entries.add(
-      Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: Text(
-          question.questionText,
-          textScaler: const TextScaler.linear(1.3),
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-      ),
-    );
-
-    const double checkboxWidth = 40.0;
-
-    if (question.options?.isNotEmpty ?? false) {
-      for (Object? option in question.options!) {
-        if (option != null) {
-          String optionString = option.toString();
-          entries.add(
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: checkboxWidth,
-                  child: Transform.scale(
-                    scale: 1.5,
-                    child: Checkbox(
-                      value: optionsValues[optionString] ?? false,
-                      onChanged: (value) {
-                        setState(() {
-                          optionsValues[optionString] = value ?? false;
-                          question.answer = optionsValues;
-                        });
-                      },
-                      semanticLabel: optionString,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    optionString,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textScaler: const TextScaler.linear(1.2),
-                  ),
-                ),
-              ],
-            ),
-          );
+  Widget generateMultipleChoice(Question question) {
+    return MultiplechoiceWidget(
+      options:
+          question.options!.map((option) => option?.toString() ?? "").toList(),
+      label: question.questionText,
+      onValueChanged: (values) {
+        Map<String, bool> answers = {};
+        for (int i = 0; i < values.length; i++) {
+          answers.addEntries(
+              [MapEntry(question.options?[i].toString() ?? "", values[i])]);
         }
-      }
-    }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: entries,
+        question.answer = answers;
+      },
     );
   }
 
