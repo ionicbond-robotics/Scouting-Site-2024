@@ -7,7 +7,7 @@ import 'package:scouting_site/services/localstorage.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/question.dart';
-import 'package:scouting_site/widgets/form_page.dart';
+import 'package:scouting_site/pages/form_page.dart';
 
 class Scouting {
   static final List<FormPageData> _pages = [

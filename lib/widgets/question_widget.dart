@@ -4,6 +4,7 @@ import 'package:scouting_site/services/cast.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
+import 'package:scouting_site/widgets/dialog_widgets/dialog_toggle_switch.dart';
 
 class QuestionWidget extends StatefulWidget {
   final Question _question;
@@ -177,32 +178,23 @@ class QuestionWidgetState extends State<QuestionWidget> {
         initialSelection: question.answer,
       );
 
-  Row generateCheckbox(Question question, {Function(bool)? customFallback}) =>
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            question.questionText,
+  Widget generateCheckbox(Question question,
+          {Function(bool)? customFallback}) =>
+      SizedBox(
+        height: 40,
+        width: 500,
+        child: Flexible(
+          child: DialogToggleSwitch(
+            onToggle: (value) {
+              setState(() {
+                question.answer = value;
+              });
+            },
             textScaler: const TextScaler.linear(1.2),
+            label: question.questionText,
+            initialValue: (question.answer ?? false) as bool,
           ),
-          const SizedBox(
-            width: 5,
-          ),
-          Transform.scale(
-            scale: 1.5,
-            child: Checkbox(
-              value: (tryCast(question.answer) ?? false),
-              onChanged: (value) {
-                setState(() {
-                  value ??= false;
-                  question.answer = value;
-                  customFallback?.call(value!);
-                });
-              },
-              semanticLabel: question.questionText,
-            ),
-          ),
-        ],
+        ),
       );
 
   Column generateCounter(Question question) {
