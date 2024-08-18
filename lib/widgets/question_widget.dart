@@ -5,6 +5,7 @@ import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_toggle_switch.dart';
+import 'package:scouting_site/widgets/questions_widgets/counter_widget.dart';
 import 'package:scouting_site/widgets/questions_widgets/multiplechoice_widget.dart';
 
 class QuestionWidget extends StatefulWidget {
@@ -151,7 +152,7 @@ class QuestionWidgetState extends State<QuestionWidget> {
         ),
       );
 
-  Column generateCounter(Question question) {
+  Widget generateCounter(Question question) {
     String maxString = question.options?[2]?.toString() ?? "";
     String minString = question.options?[1]?.toString() ?? "";
 
@@ -179,62 +180,14 @@ class QuestionWidgetState extends State<QuestionWidget> {
 
     currentValue = getCurrentValue();
 
-    return Column(
-      children: [
-        Text(
-          question.questionText,
-          textScaler: const TextScaler.linear(1.2),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              iconSize: 30,
-              onPressed: () {
-                setState(() {
-                  if (max != null && currentValue + 1 > max) {
-                    question.answer = max;
-                  } else {
-                    question.answer = currentValue + 1;
-                  }
-                });
-              },
-              icon: const Icon(
-                Icons.add_outlined,
-              ),
-            ),
-            const SizedBox(width: 20),
-            Text(
-              currentValue.toString(),
-              textScaler: const TextScaler.linear(1.4),
-            ),
-            const SizedBox(width: 20),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  if (min != null && currentValue - 1 < min) {
-                    question.answer = min;
-                  } else {
-                    question.answer = currentValue - 1;
-                  }
-                });
-              },
-              iconSize: 30,
-              icon: const Icon(
-                Icons.remove_outlined,
-              ),
-            ),
-          ],
-        ),
-        IconButton(
-          onPressed: () {
-            setState(() {
-              question.answer = question.options?[0] ?? min;
-            });
-          },
-          icon: const Icon(Icons.refresh_outlined),
-        )
-      ],
+    return CounterWidget(
+      min: min,
+      max: max,
+      intialValue: currentValue,
+      label: question.questionText,
+      onValueChanged: (value) {
+        question.answer = value;
+      },
     );
   }
 }

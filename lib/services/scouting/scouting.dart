@@ -17,7 +17,7 @@ class Scouting {
         Question(
           type: AnswerType.text,
           questionText: "Notes amount",
-          evaluation: 2,
+          evaluation: 2.0,
         ),
         Question(
           type: AnswerType.dropdown,
@@ -34,7 +34,7 @@ class Scouting {
         Question(
           type: AnswerType.checkbox,
           questionText: "Autonomous?",
-          evaluation: 5,
+          evaluation: 5.0,
         ),
         Question(
           type: AnswerType.multipleChoice,
@@ -62,7 +62,7 @@ class Scouting {
             0, // initial
             0, // min
           ],
-          evaluation: 2,
+          evaluation: 2.0,
         ),
       ],
     ),
