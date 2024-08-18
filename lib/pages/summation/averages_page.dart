@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:scouting_site/pages/summation/team_overview.dart';
 import 'package:scouting_site/services/firebase/firebase_api.dart';
 import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
@@ -178,28 +179,14 @@ class _AveragesPageState extends State<AveragesPage> {
                 icon: const Icon(Icons.remove_red_eye_rounded),
                 tooltip: "Team Overview",
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(
-                              "${form.scoutedTeam} - Game #${form.game} by ${form.scouter}"),
-                          content: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    ...getAnswersWidgetsForDialog(form)
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TeamOverviewPage(
+                          team: extractNumber(form.scoutedTeam ?? ""),
+                          forms: widget.formsData ?? []),
+                    ),
+                  );
                 },
               ),
             ],

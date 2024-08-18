@@ -5,6 +5,7 @@ class DialogToggleSwitch extends StatefulWidget {
   final bool initialValue;
   final String? label;
   final TextScaler textScaler;
+
   const DialogToggleSwitch({
     super.key,
     this.initialValue = false,
