@@ -3,7 +3,7 @@ import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
 import 'package:scouting_site/theme.dart';
-import 'package:scouting_site/widgets/question_widget.dart';
+import 'package:scouting_site/widgets/questions_widgets/question_widget.dart';
 
 class FormPage extends StatefulWidget {
   final FormPageData data;
