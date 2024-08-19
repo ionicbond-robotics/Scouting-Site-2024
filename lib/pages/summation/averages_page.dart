@@ -183,8 +183,10 @@ class _AveragesPageState extends State<AveragesPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => TeamOverviewPage(
-                          team: extractNumber(form.scoutedTeam ?? ""),
-                          forms: widget.formsData ?? []),
+                        team: extractNumber(form.scoutedTeam ?? ""),
+                        forms: widget.formsData ?? [],
+                        avgs: _formsData,
+                      ),
                     ),
                   );
                 },

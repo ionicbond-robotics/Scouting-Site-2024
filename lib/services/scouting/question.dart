@@ -11,8 +11,8 @@ class Question {
     required this.questionText,
     this.options = const [],
     this.answer,
-    this.evaluation = 0,
-    score = 0,
+    this.evaluation = 0.0,
+    score = 0.0,
   }) : _score = score {
     _validateArguments();
   }
