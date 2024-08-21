@@ -30,9 +30,9 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git clone --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
-        rsync -av --delete build/web/ gh-pages/
-        cd gh-pages
+        git clone --branch=ghpages https://github.com/${{ github.repository }}.git ghpages
+        rsync -av --delete build/web/ ghpages/
+        cd ghpages
         git add --all
         git commit -m "Deploy from master branch via GitHub Actions"
-        git push --force origin gh-pages
+        git push --force origin ghpages
