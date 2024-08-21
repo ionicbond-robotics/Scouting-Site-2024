@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:connectivity_plus/connectivity_plus.dart';
-
+import 'package:http/http.dart' as http;
 // Project imports:
 import 'package:scouting_site/pages/form_page.dart';
 import 'package:scouting_site/services/firebase/firebase_api.dart';
@@ -74,18 +74,27 @@ class Scouting {
     ),
   ];
 
+  static const String _tbaAPIKey =
+      "fHNgYvUmzk3iawp0SC8XCIzePCWIE4kbZWMn6ypsL7VZ5NclTgcy9v0lbgXECA7E"; // example value, replace to use in your own project
+
+  static (Map<int, List<String>>, Map<int, List<String>>) _matchesTeamsPair =
+      ({}, {});
+
   static List<BuildContext> _pagesContexts = [];
-  static const String competitionName = "test";
+
+  static const String competitionName = "2024isde1";
+
+  static int _currentPage = -1;
+
   static FormData data = FormData(
     pages: _pages,
     scouter: localStorage?.getString("scouter"),
   );
   static bool hasInternet = true;
+
   static bool isOnLastPage() {
     return _currentPage >= _pages.length - 1;
   }
-
-  static int _currentPage = -1;
 
   static void _resetValues() {
     _currentPage = -1;
@@ -120,7 +129,12 @@ class Scouting {
     }
 
     await sendUnsentFormEntries();
+
+    _matchesTeamsPair = await getEventTeams(competitionName);
   }
+
+  static (Map<int, List<String>>, Map<int, List<String>>) matchesTeamsPair() =>
+      _matchesTeamsPair;
 
   static Future<void> sendUnsentFormEntries() async {
     List<String>? formsToSend = localStorage
@@ -219,5 +233,44 @@ class Scouting {
     }
 
     _resetValues();
+  }
+
+  static Future<(Map<int, List<String>>, Map<int, List<String>>)> getEventTeams(
+      String eventKey) async {
+    const String apiUrl = 'https://www.thebluealliance.com/api/v3';
+
+    final response = await http.get(
+        Uri.parse("$apiUrl/event/$eventKey/matches/simple"),
+        headers: {'X-TBA-Auth-Key': _tbaAPIKey});
+
+    final jsonResponse = jsonDecode(response.body);
+
+    Map<int, List<String>> redAlliance = {};
+    Map<int, List<String>> blueAlliance = {};
+
+    if (jsonResponse is List<dynamic>) {
+      for (var match in jsonResponse) {
+        final alliancesObjects = match["alliances"];
+        List<String> currentGameRed = [];
+        List<String> currentGameBlue = [];
+
+        for (var teamKey in alliancesObjects["red"]["team_keys"]) {
+          currentGameRed
+              .add(teamKey.toString().substring(3)); // remove the frc prefix
+        }
+        for (var teamKey in alliancesObjects["blue"]["team_keys"]) {
+          currentGameBlue
+              .add(teamKey.toString().substring(3)); // remove the frc prefix
+        }
+
+        redAlliance[match["match_number"] as int] = currentGameRed;
+        blueAlliance[match["match_number"] as int] = currentGameBlue;
+      }
+    }
+    // print(jsonResponse);
+    return (
+      redAlliance,
+      blueAlliance,
+    );
   }
 }

@@ -37,6 +37,9 @@ List<FormData> handleSearchQuery(
 }
 
 int extractNumber(String team) {
+  if (int.tryParse(team) != null) {
+    return int.parse(team);
+  }
   // Split by the '#' character and parse the number
 
   List<String> parts = team.split('#');

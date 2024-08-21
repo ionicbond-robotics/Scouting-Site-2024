@@ -44,17 +44,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> teams = [
-    "Ionic Bond #9738",
-    "Bumblebee #3399",
-  ];
-
+  List<String> teams = [];
   final _scouterController = TextEditingController();
   final _gameController = TextEditingController();
   String? _selectedTeam;
 
   @override
   void initState() {
+    Scouting.data.game = 0;
     super.initState();
     _scouterController.text = Scouting.data.scouter ?? '';
     _gameController.text = Scouting.data.game?.toString() ?? '';
@@ -63,6 +60,25 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (Scouting.data.game != null) {
+      List<String> gameTeams = [];
+
+      var (redAlliance, blueAlliance) = Scouting.matchesTeamsPair();
+      redAlliance[Scouting.data.game]?.forEach((team) => gameTeams.add(team));
+      blueAlliance[Scouting.data.game]?.forEach((team) => gameTeams.add(team));
+
+      teams = gameTeams;
+    } else {
+      var (redAlliance, blueAlliance) = Scouting.matchesTeamsPair();
+
+      for (var game in redAlliance.keys) {
+        teams.addAll(redAlliance[game] ?? []);
+        teams.addAll(blueAlliance[game] ?? []);
+      }
+
+      // print(redAlliance.runtimeType);
+    }
+
     teams.sort((a, b) {
       final int teamNumberA = extractNumber(a);
       final int teamNumberB = extractNumber(b);
@@ -102,10 +118,10 @@ class _HomePageState extends State<HomePage> {
               label: const Text("Scouting On"),
               initialSelection: Scouting.data.scoutedTeam,
               onSelected: (value) {
-                setState(() {
-                  _selectedTeam = value.toString();
-                  Scouting.data.scoutedTeam = _selectedTeam;
-                });
+                // setState(() {
+                _selectedTeam = value.toString();
+                Scouting.data.scoutedTeam = _selectedTeam;
+                // });
               },
               dropdownMenuEntries: getTeamDropdownEntries(),
               width: MediaQuery.of(context).size.width - 5,
@@ -113,7 +129,9 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 5),
             DialogTextInput(
               onSubmit: (value) {
-                Scouting.data.game = int.tryParse(value);
+                setState(() {
+                  Scouting.data.game = int.tryParse(value);
+                });
               },
               label: "Game #",
               textEditingController: _gameController,
