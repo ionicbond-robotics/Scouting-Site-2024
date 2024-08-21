@@ -1,13 +1,19 @@
+// Dart imports:
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+// Project imports:
+import 'package:scouting_site/pages/form_page.dart';
 import 'package:scouting_site/services/firebase/firebase_api.dart';
 import 'package:scouting_site/services/localstorage.dart';
-import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/form_data.dart';
+import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/question.dart';
-import 'package:scouting_site/pages/form_page.dart';
 
 class Scouting {
   static final List<FormPageData> _pages = [

@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:scouting_site/services/scouting/form_page_data.dart';
 
 class FormData {

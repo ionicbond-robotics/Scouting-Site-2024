@@ -1,7 +1,16 @@
+// Dart imports:
+import 'dart:convert';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Project imports:
 import 'package:scouting_site/pages/summation/averages_page.dart';
 import 'package:scouting_site/services/firebase/firebase_api.dart';
+import 'package:scouting_site/services/localstorage.dart';
 import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/helper_methods.dart';
@@ -222,16 +231,21 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
         ?.collection("scouting_${Scouting.competitionName}")
         .get();
 
-    if (snapshot != null) {
-      List<Map<String, dynamic>> data =
-          snapshot.docs.map((doc) => doc.data()).toList();
+    List<Map<String, dynamic>> data = [];
 
-      setState(() {
-        _formsData = data.map((scout) {
-          return FormData.fromJson(scout);
-        }).toList();
-      });
+    if (snapshot != null) {
+      data = snapshot.docs.map((doc) => doc.data()).toList();
+    } else {
+      data = jsonDecode(localStorage?.getString("scouting_data_cache") ?? "[]");
     }
+
+    setState(() {
+      _formsData = data.map((scout) {
+        return FormData.fromJson(scout);
+      }).toList();
+
+      localStorage?.setString("scouting_data_cache", jsonEncode(data));
+    });
   }
 
   List<DataRow> getDataTableRows() {

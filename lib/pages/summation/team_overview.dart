@@ -1,5 +1,10 @@
-import 'package:fl_chart/fl_chart.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:fl_chart/fl_chart.dart';
+
+// Project imports:
 import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/helper_methods.dart';
 import 'package:scouting_site/theme.dart';
@@ -62,16 +67,24 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
                     color: Colors.red,
                   ),
                   const SizedBox(width: 2),
-                  Text("${widget.team}# Score")
+                  Text("${widget.team}# Score"),
+                  const SizedBox(width: 20),
+                  Container(
+                    height: 10,
+                    width: 20,
+                    color: Colors.blue.shade200,
+                  ),
+                  const SizedBox(width: 2),
+                  const Text("Avg Global Score"),
                 ],
               ),
               const SizedBox(height: 30),
-              Row(
+              const Row(
                 children: [
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Column(
-                      children: getQuestionSwitches(),
+                      children: [],
                     ),
                   ),
                 ],
