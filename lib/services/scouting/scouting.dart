@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
+
 // Project imports:
 import 'package:scouting_site/pages/form_page.dart';
 import 'package:scouting_site/services/firebase/firebase_api.dart';
