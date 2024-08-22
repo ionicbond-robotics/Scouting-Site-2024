@@ -5,7 +5,7 @@ flutter build web --web-renderer html
 
 cd build/web
 
-sed -i '/<base href="\/">/d' index.html
+sed -i '/<base href="\/">/d' index.html # Comment this line if u need the base href specified
 
 git init
 git add .
