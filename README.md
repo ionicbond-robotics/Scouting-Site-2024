@@ -109,3 +109,9 @@ Or if im looking for all the entries of team `9738` from game # `12` ill do `tea
 * this list can be extended through the `handleSearchQuery` function on the [`lib/services/scouting/helper_methods.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/scouting/helper_methods.dart) file
 # Documentation
 ...
+
+# Deploying to github pages
+In order to deploy to `GitHub Pages`, you will need to do the following steps:
+1. Run the `flutter build web --web-renderer html` command in the root folder of your project.
+2. In the `build/web/index.html` file, remove the line that says : `<base href="/">` (IF YOU WONT REMOVE THIS LINE, YOUR WEBSITE **WILL NOT WORK**)
+3. Push the `build/web` dir's content into a GitHub repo / branch and enable github pages to it.
