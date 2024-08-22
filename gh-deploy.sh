@@ -1,3 +1,5 @@
+#!/bin/bash
+
 REPO_URL = $(git remote get-url origin)
 flutter build web --web-renderer html
 
