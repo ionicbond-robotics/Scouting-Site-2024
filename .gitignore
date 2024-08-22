@@ -16,7 +16,7 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
-build/930a72e4ee86900ec285d62deba9acd9
+build/
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
