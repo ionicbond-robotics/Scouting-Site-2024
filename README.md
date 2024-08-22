@@ -112,9 +112,13 @@ Or if im looking for all the entries of team `9738` from game # `12` ill do `tea
 
 # Deploying to github pages
 ## Bash Script Deployment:
-In the root folder, run the `gh-deploy.sh` file in order to push onto the `ghpages` branch in your repository, in order to make it work, your root folder will **have** to be linked to a git repository remote
+In the root folder, run the `gh-deploy.sh` file in order to push onto the `ghpages` branch in your repository.
+In order to make it work:
+- Your root folder will **have** to be linked to a git repository remote
+- Modify the `gh-deploy.sh` commands to either include or disclude the `<base href="/">` on your code (Discluded by default)
+
 ## Manual Deployment:
 In order to deploy to `GitHub Pages`, you will need to do the following steps:
 1. Run the `flutter build web --web-renderer html` command in the root folder of your project.
-2. In the `build/web/index.html` file, remove the line that says : `<base href="/">` (IF YOU WONT REMOVE THIS LINE, YOUR WEBSITE **WILL NOT WORK**)
+2. In the `build/web/index.html` file, remove the line that says : `<base href="/">` (IF YOU WONT REMOVE THIS LINE, YOUR WEBSITE **WILL NOT WORK** ON DEFAULT)
 3. Push the `build/web` dir's content into a GitHub repo / branch and enable github pages to it.
