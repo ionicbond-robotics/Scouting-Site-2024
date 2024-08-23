@@ -9,7 +9,7 @@ void main() async {
   const String tbaAPIKey =
       "<APIKEY>"; // example value, replace to use in your own project
 
-  File jsonFile = File("assets/matches.json");
+  File jsonFile = File("matches.json");
 
   if (!jsonFile.existsSync()) {
     jsonFile.createSync(recursive: true);
