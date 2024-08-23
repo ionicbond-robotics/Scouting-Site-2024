@@ -76,6 +76,9 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
+    bool isRedAllianceTeamSelected =
+        teams.indexOf(Scouting.data.scoutedTeam?.split(" ")[0] ?? "0") < 2;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: GlobalColors.appBarColor,
@@ -101,15 +104,23 @@ class _HomePageState extends State<HomePage> {
               initialText: Scouting.data.scouter,
             ),
             const SizedBox(height: 5),
-            DropdownMenu(
-              label: const Text("Scouting On"),
+            DropdownMenu<String>(
+              label: const Text(
+                "Scouting On",
+              ),
               initialSelection: Scouting.data.scoutedTeam,
               onSelected: (value) {
-                // setState(() {
-                _selectedTeam = value.toString();
-                Scouting.data.scoutedTeam = _selectedTeam;
-                // });
+                setState(() {
+                  _selectedTeam = value.toString();
+                  Scouting.data.scoutedTeam = _selectedTeam;
+                });
               },
+              textStyle: TextStyle(
+                color: isRedAllianceTeamSelected
+                    ? Colors.redAccent
+                    : Colors.blueAccent,
+                fontWeight: FontWeight.bold,
+              ),
               dropdownMenuEntries: getTeamDropdownEntries(),
               width: MediaQuery.of(context).size.width - 5,
             ),
@@ -199,14 +210,27 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<DropdownMenuEntry> getTeamDropdownEntries() {
-    List<DropdownMenuEntry> entries = [];
+  List<DropdownMenuEntry<String>> getTeamDropdownEntries() {
+    List<DropdownMenuEntry<String>> entries = [];
     if (teams.isNotEmpty) {
       for (int i = 0; i < teams.length; i++) {
-        entries.add(DropdownMenuEntry(
-            label:
-                "${i > 2 ? "Blue" : "Red"} ${(i + 1) % 3 == 0 ? 3 : (i + 1) % 3}: ${teams[i]}",
-            value: teams[i]));
+        bool blueAlliance = i > 2;
+        String labelText =
+            "${blueAlliance ? "Blue" : "Red"} ${(i + 1) % 3 == 0 ? 3 : (i + 1) % 3}: ${teams[i]}";
+        bool isSelected = i == teams.indexOf(_selectedTeam ?? "");
+        entries.add(
+          DropdownMenuEntry(
+            label: labelText,
+            labelWidget: Text(
+              labelText,
+              style: TextStyle(
+                color: blueAlliance ? Colors.blueAccent : Colors.redAccent,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+            value: teams[i],
+          ),
+        );
       }
     }
 
