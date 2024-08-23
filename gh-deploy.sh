@@ -31,5 +31,10 @@ git init
 git add .
 git commit -m "GitHub Pages Deploy"
 git branch -M ghpages
-git remote add origin "$REPO_URL"
+
+# Add remote origin only if it is not already set
+if ! git remote get-url origin &> /dev/null; then
+    git remote add origin "$REPO_URL"
+fi
+
 git push -u origin ghpages --force
