@@ -1,6 +1,6 @@
 # Scouting Site
 
-A base scouting site for FTC / FRC (Or any competition alike) teams.
+> A base scouting site for FTC / FRC (Or any competition alike) teams.
 
 # Getting Started
 First off, fork this repository by pressing the [`Fork`](https://github.com/DanPeled/Scouting-Tool/fork) button located on the top of this repository page.
