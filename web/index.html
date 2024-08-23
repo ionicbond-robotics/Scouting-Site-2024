@@ -73,10 +73,10 @@
   <script>
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       // Dark mode
-      document.getElementsByTagName('body')[0].style.backgroundColor = 'rgb(30, 30, 30)';
+      document.body.style.backgroundColor = 'rgb(30, 30, 30)';
     } else {
       // Light mode
-      document.getElementsByTagName('body')[0].style.backgroundColor = 'rgb(255, 255, 255)';
+      document.body.style.backgroundColor = 'rgb(255, 255, 255)';
     }
     // Function to hide the loader
     function hideLoader() {
