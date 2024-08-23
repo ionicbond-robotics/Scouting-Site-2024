@@ -1,12 +1,12 @@
 // Dart imports:
 import 'dart:convert';
+import 'dart:html' as html;
 
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:http/http.dart' as http;
 
 // Project imports:
 import 'package:scouting_site/pages/form_page.dart';
@@ -75,11 +75,7 @@ class Scouting {
     ),
   ];
 
-  static const String _tbaAPIKey =
-      "fHNgYvUmzk3iawp0SC8XCIzePCWIE4kbZWMn6ypsL7VZ5NclTgcy9v0lbgXECA7E"; // example value, replace to use in your own project
-
-  static (Map<int, List<String>>, Map<int, List<String>>) _matchesTeamsPair =
-      ({}, {});
+  static MatchesTeams _matchesTeamsPair = MatchesTeams({}, {});
 
   static List<BuildContext> _pagesContexts = [];
 
@@ -131,11 +127,20 @@ class Scouting {
 
     await sendUnsentFormEntries();
 
-    _matchesTeamsPair = await getEventTeams(competitionName);
+    _matchesTeamsPair = await getEventTeamsFromJson();
+  }
+
+  static Future<MatchesTeams> getEventTeamsFromJson() async {
+    const url = 'assets/matches.json';
+
+    // Fetch the asset using an HTTP request
+    final response = await html.HttpRequest.getString(url);
+
+    return MatchesTeams.fromJson(jsonDecode(response));
   }
 
   static (Map<int, List<String>>, Map<int, List<String>>) matchesTeamsPair() =>
-      _matchesTeamsPair;
+      (_matchesTeamsPair.redAlliance, _matchesTeamsPair.blueAlliance);
 
   static Future<void> sendUnsentFormEntries() async {
     List<String>? formsToSend = localStorage
@@ -235,43 +240,26 @@ class Scouting {
 
     _resetValues();
   }
+}
 
-  static Future<(Map<int, List<String>>, Map<int, List<String>>)> getEventTeams(
-      String eventKey) async {
-    const String apiUrl = 'https://www.thebluealliance.com/api/v3';
+class MatchesTeams {
+  final Map<int, List<String>> blueAlliance;
+  final Map<int, List<String>> redAlliance;
 
-    final response = await http.get(
-        Uri.parse("$apiUrl/event/$eventKey/matches/simple"),
-        headers: {'X-TBA-Auth-Key': _tbaAPIKey});
+  MatchesTeams(this.blueAlliance, this.redAlliance);
 
-    final jsonResponse = jsonDecode(response.body);
-
-    Map<int, List<String>> redAlliance = {};
-    Map<int, List<String>> blueAlliance = {};
-
-    if (jsonResponse is List<dynamic>) {
-      for (var match in jsonResponse) {
-        final alliancesObjects = match["alliances"];
-        List<String> currentGameRed = [];
-        List<String> currentGameBlue = [];
-
-        for (var teamKey in alliancesObjects["red"]["team_keys"]) {
-          currentGameRed
-              .add(teamKey.toString().substring(3)); // remove the frc prefix
-        }
-        for (var teamKey in alliancesObjects["blue"]["team_keys"]) {
-          currentGameBlue
-              .add(teamKey.toString().substring(3)); // remove the frc prefix
-        }
-
-        redAlliance[match["match_number"] as int] = currentGameRed;
-        blueAlliance[match["match_number"] as int] = currentGameBlue;
-      }
-    }
-    // print(jsonResponse);
-    return (
-      redAlliance,
-      blueAlliance,
+  static MatchesTeams fromJson(Map<String, dynamic> json) {
+    // Convert the "blue" and "red" entries to Map<int, List<String>>
+    Map<int, List<String>> blueAlliance =
+        (json['blue'] as Map<String, dynamic>).map(
+      (key, value) => MapEntry(int.parse(key), List<String>.from(value)),
     );
+
+    Map<int, List<String>> redAlliance =
+        (json['red'] as Map<String, dynamic>).map(
+      (key, value) => MapEntry(int.parse(key), List<String>.from(value)),
+    );
+
+    return MatchesTeams(blueAlliance, redAlliance);
   }
 }

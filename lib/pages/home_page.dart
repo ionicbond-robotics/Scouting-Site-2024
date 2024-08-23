@@ -75,19 +75,7 @@ class _HomePageState extends State<HomePage> {
         teams.addAll(redAlliance[game] ?? []);
         teams.addAll(blueAlliance[game] ?? []);
       }
-
-      // print(redAlliance.runtimeType);
     }
-
-    teams.sort((a, b) {
-      final int teamNumberA = extractNumber(a);
-      final int teamNumberB = extractNumber(b);
-
-      if (teamNumberA == 0 || teamNumberB == 0) {
-        return 0; // Handle cases where the team number cannot be extracted
-      }
-      return teamNumberA.compareTo(teamNumberB);
-    });
 
     return Scaffold(
       appBar: AppBar(
@@ -215,8 +203,11 @@ class _HomePageState extends State<HomePage> {
   List<DropdownMenuEntry> getTeamDropdownEntries() {
     List<DropdownMenuEntry> entries = [];
     if (teams.isNotEmpty) {
-      for (var team in teams) {
-        entries.add(DropdownMenuEntry(label: team, value: team));
+      for (int i = 0; i < teams.length; i++) {
+        entries.add(DropdownMenuEntry(
+            label:
+                "${i > 2 ? "Blue" : "Red"} ${(i + 1) % 3 == 0 ? 3 : (i + 1) % 3}: ${teams[i]}",
+            value: teams[i]));
       }
     }
 
