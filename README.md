@@ -91,6 +91,19 @@ static final List<FormPageData> _pages = [
     ),
   ];
   ```
+## Setting up auto match getting (from [The Blue Alliance](https://www.thebluealliance.com/))
+In order to get all of the matches for your competition:
+1. Modify the `lib/generate_matches_json.dart` file to use your TBA API Key here:
+```dart
+  const String tbaAPIKey =
+      "<APIKEY>"; // example value, replace to use in your own project
+```
+2. run the 
+```bash
+dart run lib/generate_matches_json.dart
+``` 
+command in your cli, and the matches.json file will be downloaded into your project
+
 # Using the search functionality
 On the `Summation` and `Averages` pages, exists a search bar that allows to search for specific entries in a simple way.
 E.g If im looking for any team that has a score of 12 on the `autonomous` page, ill enter `autonomous:12`.
