@@ -43,10 +43,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> teams = [];
   final _scouterController = TextEditingController();
   final _gameController = TextEditingController();
+
+  List<String> teams = [];
+
   String? _selectedTeam;
+
+  int _selectedTeamIndex = -1;
+  int previousGame = 0;
 
   @override
   void initState() {
@@ -76,8 +81,18 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    bool isRedAllianceTeamSelected =
-        teams.indexOf(Scouting.data.scoutedTeam?.split(" ")[0] ?? "0") < 2;
+    if (_selectedTeamIndex != -1 &&
+        (!teams.contains(Scouting.data.scoutedTeam) ||
+            teams.indexOf(Scouting.data.scoutedTeam ?? "") !=
+                _selectedTeamIndex) &&
+        previousGame != Scouting.data.game) {
+      setState(() {
+        _selectedTeam = teams[_selectedTeamIndex];
+        Scouting.data.scoutedTeam = _selectedTeam;
+      });
+    }
+
+    bool isRedAllianceTeamSelected = _selectedTeamIndex <= 2;
 
     return Scaffold(
       appBar: AppBar(
@@ -112,7 +127,7 @@ class _HomePageState extends State<HomePage> {
               onSelected: (value) {
                 setState(() {
                   _selectedTeam = value.toString();
-                  Scouting.data.scoutedTeam = _selectedTeam;
+                  Scouting.data.scoutedTeam = value;
                 });
               },
               textStyle: TextStyle(
@@ -128,6 +143,7 @@ class _HomePageState extends State<HomePage> {
             DialogTextInput(
               onSubmit: (value) {
                 setState(() {
+                  previousGame = Scouting.data.game ?? 0;
                   Scouting.data.game = int.tryParse(value);
                 });
               },
@@ -217,7 +233,13 @@ class _HomePageState extends State<HomePage> {
         bool blueAlliance = i > 2;
         String labelText =
             "${blueAlliance ? "Blue" : "Red"} ${(i + 1) % 3 == 0 ? 3 : (i + 1) % 3}: ${teams[i]}";
-        bool isSelected = i == teams.indexOf(_selectedTeam ?? "");
+        bool isSelected = i == teams.indexOf(Scouting.data.scoutedTeam ?? "");
+
+        // print(Scouting.data.scoutedTeam);
+
+        if (isSelected) {
+          _selectedTeamIndex = i;
+        }
 
         entries.add(
           DropdownMenuEntry(
