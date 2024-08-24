@@ -33,11 +33,16 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
       {}; // Game |-> (Team |-> entries)
   bool _showScouterField = false;
 
+  @override
+  void initState() {
+    super.initState();
+    getDocuments();
+  }
+
   String _sortBy = "game";
   Map<String, dynamic> _searchQuery = {};
   @override
   Widget build(BuildContext context) {
-    getDocuments();
     _formsData = handleSearchQuery(_formsData, _searchQuery);
 
     switch (_sortBy) {
@@ -190,16 +195,23 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          // IconButton(
+          //   onPressed: () {
+          //     setState(() {
+          //       _showScouterField = !_showScouterField;
+          //     });
+          //   },
+          //   icon: _showScouterField
+          //       ? const Icon(Icons.south_west_rounded)
+          //       : const Icon(Icons.hide_source_outlined),
+          //   tooltip: "${_showScouterField ? "Hide" : "Show"} Scouter Name",
+          // ),
           IconButton(
             onPressed: () {
-              setState(() {
-                _showScouterField = !_showScouterField;
-              });
+              getDocuments();
             },
-            icon: _showScouterField
-                ? const Icon(Icons.south_west_rounded)
-                : const Icon(Icons.hide_source_outlined),
-            tooltip: "${_showScouterField ? "Hide" : "Show"} Scouter Name",
+            tooltip: "Re-Fetch Documents",
+            icon: const Icon(Icons.refresh_outlined),
           ),
           const SizedBox(width: 12),
           FloatingActionButton(

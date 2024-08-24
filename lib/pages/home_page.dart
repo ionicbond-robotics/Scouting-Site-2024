@@ -82,10 +82,10 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (_selectedTeamIndex != -1 &&
+        previousGame != Scouting.data.game &&
         (!teams.contains(Scouting.data.scoutedTeam) ||
             teams.indexOf(Scouting.data.scoutedTeam ?? "") !=
-                _selectedTeamIndex) &&
-        previousGame != Scouting.data.game) {
+                _selectedTeamIndex)) {
       setState(() {
         _selectedTeam = teams[_selectedTeamIndex];
         Scouting.data.scoutedTeam = _selectedTeam;
