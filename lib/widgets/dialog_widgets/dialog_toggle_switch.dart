@@ -43,12 +43,10 @@ class _DialogToggleSwitchState extends State<DialogToggleSwitch> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Flexible(
-              child: Text(
-                widget.label ?? '',
-                textAlign: TextAlign.center,
-                textScaler: widget.textScaler,
-              ),
+            Text(
+              widget.label ?? '',
+              textAlign: TextAlign.center,
+              textScaler: widget.textScaler,
             ),
             const SizedBox(width: 3),
             Switch(

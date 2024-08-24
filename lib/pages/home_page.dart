@@ -218,6 +218,7 @@ class _HomePageState extends State<HomePage> {
         String labelText =
             "${blueAlliance ? "Blue" : "Red"} ${(i + 1) % 3 == 0 ? 3 : (i + 1) % 3}: ${teams[i]}";
         bool isSelected = i == teams.indexOf(_selectedTeam ?? "");
+
         entries.add(
           DropdownMenuEntry(
             label: labelText,

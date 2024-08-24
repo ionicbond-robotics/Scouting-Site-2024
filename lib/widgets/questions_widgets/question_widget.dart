@@ -141,17 +141,15 @@ class QuestionWidgetState extends State<QuestionWidget> {
       SizedBox(
         height: 40,
         width: 500,
-        child: Flexible(
-          child: DialogToggleSwitch(
-            onToggle: (value) {
-              setState(() {
-                question.answer = value;
-              });
-            },
-            textScaler: const TextScaler.linear(1.2),
-            label: question.questionText,
-            initialValue: (question.answer ?? false) as bool,
-          ),
+        child: DialogToggleSwitch(
+          onToggle: (value) {
+            setState(() {
+              question.answer = value;
+            });
+          },
+          textScaler: const TextScaler.linear(1.2),
+          label: question.questionText,
+          initialValue: (question.answer ?? false) as bool,
         ),
       );
 

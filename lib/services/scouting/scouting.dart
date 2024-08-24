@@ -124,7 +124,7 @@ class Scouting {
     if (localStorage == null) {
       loadLocalStorage();
     }
-
+    initializeData();
     await sendUnsentFormEntries();
 
     _matchesTeamsPair = await getEventTeamsFromJson();
@@ -239,6 +239,10 @@ class Scouting {
     }
 
     _resetValues();
+  }
+
+  static void initializeData() {
+    data.scouter = localStorage?.getString("scouter");
   }
 }
 
