@@ -9,7 +9,7 @@ class DialogTextInput extends StatefulWidget {
   final String? initialText;
   final bool allowEmptySubmission;
   final bool enabled;
-
+  final TextInputType keyboard;
   final TextEditingController? textEditingController;
 
   const DialogTextInput({
@@ -21,6 +21,7 @@ class DialogTextInput extends StatefulWidget {
     this.enabled = true,
     this.formatter,
     this.textEditingController,
+    this.keyboard = TextInputType.text,
   });
 
   @override
@@ -78,6 +79,7 @@ class _DialogTextInputState extends State<DialogTextInput> {
             labelText: widget.label,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
           ),
+          keyboardType: widget.keyboard,
         ),
       ),
     );

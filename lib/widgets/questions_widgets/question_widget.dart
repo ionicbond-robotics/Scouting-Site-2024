@@ -115,6 +115,12 @@ class QuestionWidgetState extends State<QuestionWidget> {
       label: question.questionText,
       initialText: question.answer?.toString(),
       formatter: formatter,
+      keyboard: question.type == AnswerType.integer
+          ? TextInputType.number
+          : const TextInputType.numberWithOptions(
+              decimal: true,
+              signed: false,
+            ),
     );
   }
 
