@@ -2,77 +2,11 @@
 
 > A base scouting site for FTC / FRC (Or any competition alike) teams.
 
-# Getting Started
-First off, fork this repository by pressing the [`Fork`](https://github.com/DanPeled/Scouting-Tool/fork) button located on the top of this repository page.
-
-## Requirements:
+# Requirements:
 1. [Dart](https://dart.dev/get-dart) & [Flutter](https://docs.flutter.dev/get-started/install) installed (Recommeneded, not neccessary).
-2. [Git](https://git-scm.com/) installed (or modify from github, but less recommended).
+2. [Git](https://git-scm.com/) installed (or modify from github, not recommended).
 3. A [Firebase](https://firebase.google.com/) project with a [Firestore Database](https://firebase.google.com/docs/firestore) & the `web` option configured.
 
-## Setting up custom question & pages
-Go to the [`lib/services/scouting/scouting.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/scouting/scouting.dart) file and modify the `pages` `List<FormPageData>` located at the top of the class. 
-
-e.g : 
-```dart
-static final List<FormPageData> _pages = [
-    FormPageData(
-      pageName: "Autonomous",
-      questions: [
-        Question(
-          type: AnswerType.text,
-          questionText: "Notes amount",
-          evaluation: 2,
-        ),
-        Question(
-          type: AnswerType.dropdown,
-          questionText: "Start position",
-          options: [
-            "Top",
-            "Middle",
-          ],
-          evaluation: {
-            "Top": 1,
-            "Middle": 2,
-          },
-        ),
-        Question(
-          type: AnswerType.checkbox,
-          questionText: "Autonomous?",
-          evaluation: 5,
-        ),
-        Question(
-          type: AnswerType.multipleChoice,
-          options: [
-            "Yes",
-            "No",
-            "Brocolli",
-          ],
-          questionText: "How many?",
-          evaluation: {
-            "Yes": 1,
-            "No": 3,
-            "Brocolli": 4,
-          },
-        ),
-        Question(
-          type: AnswerType.number,
-          questionText: "Your opinion about canibalism",
-          evaluation: 12,
-        ),
-        Question(
-          type: AnswerType.counter,
-          questionText: "Did they do it?",
-          options: [
-            0, // initial
-            0, // min
-          ],
-          evaluation: 2,
-        ),
-      ],
-    ),
-  ];
-  ```
 ## Setting up auto match getting (from [The Blue Alliance](https://www.thebluealliance.com/))
 In order to get all of the matches for your competition:
 1. Modify the `lib/generate_matches_json.dart` file to use your TBA API Key here:
