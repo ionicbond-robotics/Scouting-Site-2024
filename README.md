@@ -10,24 +10,6 @@ First off, fork this repository by pressing the [`Fork`](https://github.com/DanP
 2. [Git](https://git-scm.com/) installed (or modify from github, but less recommended).
 3. A [Firebase](https://firebase.google.com/) project with a [Firestore Database](https://firebase.google.com/docs/firestore) & the `web` option configured.
 
-## Setting up your database in-code
-Go to the [`lib/services/firebase/firebase_api.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/firebase/firebase_api.dart) file and modify the following lines to use your firebase project details:
-```dart
-Future<void> initialize() async {
-    // ...
-	app = await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: "<your apiKey>",
-        appId: "<your appId>",
-        messagingSenderId: "<your messaginSenderId>",
-        projectId: "<your projectId>",
-        storageBucket: "<your storage Bucket>",
-      ),
-    );
-	// ...
-  }
-```
-
 ## Setting up custom question & pages
 Go to the [`lib/services/scouting/scouting.dart`](https://github.com/DanPeled/Scouting-Tool/blob/master/lib/services/scouting/scouting.dart) file and modify the `pages` `List<FormPageData>` located at the top of the class. 
 
