@@ -127,6 +127,7 @@ class _HomePageState extends State<HomePage> {
               onSelected: (value) {
                 setState(() {
                   _selectedTeam = value.toString();
+                  _selectedTeamIndex = teams.indexOf(_selectedTeam ?? "");
                   Scouting.data.scoutedTeam = value;
                 });
               },
