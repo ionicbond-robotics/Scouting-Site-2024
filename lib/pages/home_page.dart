@@ -7,6 +7,7 @@ import 'package:scouting_site/pages/summation/scouting_entries_page.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/localstorage.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
+import 'package:scouting_site/services/title_case.dart';
 import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 
@@ -119,6 +120,18 @@ class _HomePageState extends State<HomePage> {
               initialText: Scouting.data.scouter,
             ),
             const SizedBox(height: 5),
+            DialogTextInput(
+              onSubmit: (value) {
+                setState(() {
+                  previousGame = Scouting.data.game ?? 0;
+                  Scouting.data.game = int.tryParse(value);
+                });
+              },
+              label: "Game #",
+              textEditingController: _gameController,
+              formatter: TextFormatterBuilder.integerTextFormatter(),
+            ),
+            const SizedBox(height: 5),
             DropdownMenu<String>(
               label: const Text(
                 "Scouting On",
@@ -140,18 +153,21 @@ class _HomePageState extends State<HomePage> {
               dropdownMenuEntries: getTeamDropdownEntries(),
               width: MediaQuery.of(context).size.width - 5,
             ),
-            const SizedBox(height: 5),
-            DialogTextInput(
-              onSubmit: (value) {
-                setState(() {
-                  previousGame = Scouting.data.game ?? 0;
-                  Scouting.data.game = int.tryParse(value);
-                });
+            const SizedBox(height: 10),
+            DropdownMenu<MatchType>(
+              label: const Text("Match type"),
+              initialSelection: MatchType.normal,
+              dropdownMenuEntries: MatchType.values
+                  .map((type) => DropdownMenuEntry(
+                        value: type,
+                        label: type.name.toTitleCase(),
+                      ))
+                  .toList(),
+              onSelected: (matchType) {
+                Scouting.data.matchType = matchType ?? MatchType.normal;
               },
-              label: "Game #",
-              textEditingController: _gameController,
-              formatter: TextFormatterBuilder.integerTextFormatter(),
-            )
+              width: MediaQuery.of(context).size.width - 100,
+            ),
           ],
         ),
       ),

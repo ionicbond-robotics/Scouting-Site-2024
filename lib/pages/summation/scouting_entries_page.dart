@@ -16,6 +16,7 @@ import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/helper_methods.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
+import 'package:scouting_site/services/title_case.dart';
 import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 
@@ -31,7 +32,7 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
 
   Map<int, Map<String, List<FormData>>> gamesDataMap =
       {}; // Game |-> (Team |-> entries)
-  bool _showScouterField = false;
+  final bool _showScouterField = false;
 
   @override
   void initState() {
@@ -128,6 +129,13 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
                               ),
                             ),
                           ),
+                        const DataColumn(
+                            label: Expanded(
+                                child: Row(
+                          children: [
+                            Text("Match Type"),
+                          ],
+                        ))),
                         DataColumn(
                           label: Expanded(
                             child: Row(
@@ -252,9 +260,24 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
     }
 
     setState(() {
-      _formsData = data.map((scout) {
-        return FormData.fromJson(scout);
-      }).toList();
+      _formsData = data
+          .map((scout) {
+            return FormData.fromJson(scout);
+          })
+          .toList()
+          .map((match) {
+            if (match.matchType != MatchType.normal &&
+                (match.game ?? 0) < 200) {
+              int addition =
+                  MatchType.rematch == (match.game ?? MatchType.normal)
+                      ? 200
+                      : 300;
+              return match..game = (match.game ?? 0) + addition;
+            } else {
+              return match;
+            }
+          })
+          .toList();
 
       localStorage?.setString("scouting_data_cache", jsonEncode(data));
     });
@@ -265,6 +288,7 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
     for (FormData form in _formsData) {
       rows.add(DataRow(cells: [
         if (_showScouterField) DataCell(Text(form.scouter ?? "")),
+        DataCell(Text((form.matchType.name).toTitleCase())),
         DataCell(Text(form.scoutedTeam ?? "")),
         DataCell(Text(form.game?.toString() ?? "0")),
         ...getPagesDataRows(pages: _formsData.first.pages, data: form.pages),

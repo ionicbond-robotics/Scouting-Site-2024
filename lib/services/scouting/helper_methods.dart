@@ -132,3 +132,9 @@ String prettyJson(dynamic json) {
   var encoder = JsonEncoder.withIndent(spaces);
   return encoder.convert(json);
 }
+
+String getNumAsFixed(num number) {
+  if (number is int) return number.toString();
+
+  return number.toStringAsFixed(2);
+}

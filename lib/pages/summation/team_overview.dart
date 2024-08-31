@@ -8,6 +8,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:scouting_site/services/scouting/form_data.dart';
 import 'package:scouting_site/services/scouting/helper_methods.dart';
 import 'package:scouting_site/theme.dart';
+import 'package:scouting_site/widgets/avgs_graph.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_toggle_switch.dart';
 
 class TeamOverviewPage extends StatefulWidget {
@@ -54,7 +55,7 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
               const SizedBox(height: 100),
               SizedBox(
                 height: 600,
-                width: screenWidth - 100,
+                width: screenWidth - 150,
                 child: getTotalScoreGraph(),
               ),
               const SizedBox(height: 10),
@@ -92,6 +93,10 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.settings_outlined),
       ),
     );
   }
@@ -190,70 +195,10 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
         .toList();
 
     List<FlSpot> teamSpots = teamScores.entries
-        .map((entry) => FlSpot(entry.key.toDouble(), entry.value))
+        .map((entry) => FlSpot(
+            entry.key.toDouble(), double.parse(entry.value.toStringAsFixed(2))))
         .toList();
 
-    return LineChart(
-      LineChartData(
-        titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (value, meta) {
-                if (value.toInt() == value) {
-                  return Text(value.toInt().toString());
-                } else {
-                  return Container();
-                }
-              },
-            ),
-          ),
-          topTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: false,
-              getTitlesWidget: (value, meta) {
-                if (value.toInt() == value) {
-                  return Text(value.toInt().toString());
-                } else {
-                  return Container();
-                }
-              },
-            ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: false,
-              getTitlesWidget: (value, meta) {
-                return Text(value.toInt().toString());
-              },
-            ),
-          ),
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: avgSpots,
-            isCurved: false,
-            dotData: const FlDotData(show: false),
-            belowBarData: BarAreaData(show: false),
-          ),
-          LineChartBarData(
-            spots: teamSpots,
-            isCurved: false,
-            dotData: FlDotData(
-                show: true,
-                getDotPainter: (spot, percent, barData, index) {
-                  return FlDotCirclePainter(
-                    radius: 6, // Set your custom size for the second graph
-                    color: Colors.red,
-                    strokeWidth: 1,
-                    strokeColor: Colors.black,
-                  );
-                }),
-            color: Colors.red,
-            belowBarData: BarAreaData(show: false),
-          ),
-        ],
-      ),
-    );
+    return AvgsGraph(avgSpots: avgSpots, teamSpots: teamSpots);
   }
 }

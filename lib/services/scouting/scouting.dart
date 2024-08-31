@@ -86,7 +86,9 @@ class Scouting {
   static FormData data = FormData(
     pages: _pages,
     scouter: localStorage?.getString("scouter"),
+    matchType: MatchType.normal,
   );
+
   static bool hasInternet = true;
 
   static bool isOnLastPage() {
@@ -207,6 +209,7 @@ class Scouting {
     return {
       'pages': pagesJson,
       'scouter': data.scouter,
+      'match_type': data.matchType.name,
       'scouted_on': data.scoutedTeam,
       'game': data.game,
       'score': data.evaluate(),
@@ -267,3 +270,5 @@ class MatchesTeams {
     return MatchesTeams(blueAlliance, redAlliance);
   }
 }
+
+enum MatchType { normal, rematch, practice }

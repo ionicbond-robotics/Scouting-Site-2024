@@ -38,8 +38,17 @@ class _AveragesPageState extends State<AveragesPage> {
       _formsData = widget.formsData!;
     }
 
-    _formsData = calculateAvgs(_formsData).values.toList();
+    _formsData = _formsData.map((match) {
+      if (match.matchType != MatchType.normal && (match.game ?? 0) < 200) {
+        int addition =
+            MatchType.rematch == (match.game ?? MatchType.normal) ? 200 : 300;
+        return match..game = (match.game ?? 0) + addition;
+      } else {
+        return match;
+      }
+    }).toList();
 
+    _formsData = calculateAvgs(_formsData).values.toList();
     switch (_sortBy) {
       case "total_score":
         sortByTotalScore(_formsData);
@@ -343,7 +352,7 @@ class _AveragesPageState extends State<AveragesPage> {
       if (pageNames.contains(page.pageName)) {
         if (data.map((page_) => page_.pageName).contains(page.pageName)) {
           double score = page.score;
-          cells.add(DataCell(Text(score.toString())));
+          cells.add(DataCell(Text(getNumAsFixed(score))));
           totalScore += score;
         } else {
           cells.add(DataCell.empty);
@@ -351,7 +360,7 @@ class _AveragesPageState extends State<AveragesPage> {
       }
     }
 
-    cells.add(DataCell(Text(totalScore.toString())));
+    cells.add(DataCell(Text(getNumAsFixed(totalScore))));
 
     return cells;
   }
@@ -411,6 +420,7 @@ class _AveragesPageState extends State<AveragesPage> {
         scouter: "",
         score: avgTotal,
         scoutedTeam: team,
+        matchType: MatchType.normal,
       );
     }
 

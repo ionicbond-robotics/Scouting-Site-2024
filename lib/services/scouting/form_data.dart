@@ -1,17 +1,23 @@
+// Package imports:
+import 'package:collection/collection.dart';
+
 // Project imports:
 import 'package:scouting_site/services/scouting/form_page_data.dart';
+import 'package:scouting_site/services/scouting/scouting.dart';
 
 class FormData {
   List<FormPageData> pages = [];
   String? scouter;
   String? scoutedTeam;
   int? game;
+  MatchType matchType;
   final double score;
 
   FormData({
     required this.pages,
-    this.scoutedTeam,
     required this.scouter,
+    required this.matchType,
+    this.scoutedTeam,
     this.game,
     this.score = 0,
   });
@@ -29,6 +35,9 @@ class FormData {
       scoutedTeam: json["scouted_on"],
       game: json["game"],
       score: json["score"],
+      matchType: MatchType.values.firstWhereOrNull(
+              (match) => match.name == json["match_type"] as String?) ??
+          MatchType.normal,
     );
   }
 
