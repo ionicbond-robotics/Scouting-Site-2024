@@ -95,8 +95,31 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.settings_outlined),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Edit Graph Settings"),
+              scrollable: true,
+              content: SizedBox(
+                width: 700,
+                height: 700,
+                child: Column(
+                  children: getQuestionSwitches(),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Close"),
+                )
+              ],
+            ),
+          );
+        },
+        child: const Icon(Icons.settings_outlined),
       ),
     );
   }
@@ -106,7 +129,7 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
   }
 
   List<Widget> getQuestionSwitches() {
-    List<Widget> questions = [];
+    List<Widget> questionsToggles = [];
 
     List<FormData> teamForms = widget.forms
         .where((form) => extractNumber(form.scoutedTeam ?? "") == widget.team)
@@ -114,16 +137,19 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
     double switchesSize = (screenWidth > 500) ? 500 : screenWidth;
 
     for (var page in teamForms.first.pages) {
-      questions.add(Text(
-        page.pageName,
-        textScaler: const TextScaler.linear(1.6),
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
+      questionsToggles.add(
+        DialogToggleSwitch(
+          label: page.pageName,
+          textScaler: const TextScaler.linear(1.6),
+          // style: const TextStyle(
+          //   fontWeight: FontWeight.bold,
+          // ),
+          onToggle: (value) {},
         ),
-      ));
-
+      );
+      questionsToggles.add(const SizedBox(height: 5));
       for (var question in page.questions) {
-        questions.add(
+        questionsToggles.add(
           SizedBox(
             width: switchesSize,
             height: 40,
@@ -133,12 +159,14 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
             ),
           ),
         );
+
+        questionsToggles.add(const SizedBox(height: 5));
       }
 
-      questions.add(const Divider());
+      questionsToggles.add(const Divider());
     }
 
-    return questions;
+    return questionsToggles;
   }
 
   Widget getTotalScoreGraph() {
