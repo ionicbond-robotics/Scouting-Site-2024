@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 
 // Project imports:
 import 'package:scouting_site/pages/summation/scouting_entries_page.dart';
+import 'package:scouting_site/services/firebase/firebase_api.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/localstorage.dart';
 import 'package:scouting_site/services/scouting/scouting.dart';
@@ -53,6 +54,8 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedTeamIndex = -1;
   int previousGame = 0;
+  bool loggedIn = false;
+  bool _showPassword = false;
 
   @override
   void initState() {
@@ -61,7 +64,14 @@ class _HomePageState extends State<HomePage> {
     _scouterController.text = Scouting.data.scouter ?? '';
     _gameController.text = Scouting.data.game?.toString() ?? '';
     _selectedTeam = Scouting.data.scoutedTeam;
+
+    if (localStorage?.getString("password") != null) {
+      // print(localStorage?.getString("password"));
+      validatePassword(localStorage?.getString("password") ?? "");
+    }
   }
+
+  String _password = "";
 
   @override
   Widget build(BuildContext context) {
@@ -95,152 +105,237 @@ class _HomePageState extends State<HomePage> {
 
     bool isRedAllianceTeamSelected = _selectedTeamIndex <= 2;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: GlobalColors.appBarColor,
-        title: Text(
-          widget.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: GlobalColors.teamColor,
+    if (loggedIn) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: GlobalColors.appBarColor,
+          title: Text(
+            widget.title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: GlobalColors.teamColor,
+            ),
           ),
         ),
-      ),
-      body: Container(
-        color: GlobalColors.backgroundColor,
-        child: Column(
-          children: [
-            const SizedBox(height: 5),
-            DialogTextInput(
-              label: "Scouter name",
-              textEditingController: _scouterController,
-              onSubmit: (value) {
-                Scouting.data.scouter = value;
-              },
-              initialText: Scouting.data.scouter,
-            ),
-            const SizedBox(height: 5),
-            DialogTextInput(
-              onSubmit: (value) {
-                setState(() {
-                  previousGame = Scouting.data.game ?? 0;
-                  Scouting.data.game = int.tryParse(value);
-                });
-              },
-              label: "Game #",
-              textEditingController: _gameController,
-              formatter: TextFormatterBuilder.integerTextFormatter(),
-            ),
-            const SizedBox(height: 5),
-            DropdownMenu<String>(
-              label: const Text(
-                "Scouting On",
-              ),
-              initialSelection: Scouting.data.scoutedTeam,
-              onSelected: (value) {
-                setState(() {
-                  _selectedTeam = value.toString();
-                  _selectedTeamIndex = teams.indexOf(_selectedTeam ?? "");
-                  Scouting.data.scoutedTeam = value;
-                });
-              },
-              textStyle: TextStyle(
-                color: isRedAllianceTeamSelected
-                    ? Colors.redAccent
-                    : Colors.blueAccent,
-                fontWeight: FontWeight.bold,
-              ),
-              dropdownMenuEntries: getTeamDropdownEntries(),
-              width: MediaQuery.of(context).size.width - 5,
-            ),
-            const SizedBox(height: 10),
-            DropdownMenu<MatchType>(
-              label: const Text("Match type"),
-              initialSelection: MatchType.normal,
-              dropdownMenuEntries: MatchType.values
-                  .map((type) => DropdownMenuEntry(
-                        value: type,
-                        label: type.name.toTitleCase(),
-                      ))
-                  .toList(),
-              onSelected: (matchType) {
-                Scouting.data.matchType = matchType ?? MatchType.normal;
-              },
-              width: MediaQuery.of(context).size.width - 100,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+        body: Container(
+          color: GlobalColors.backgroundColor,
+          child: Column(
             children: [
-              const SizedBox(
-                width: 5,
-              ),
-              FloatingActionButton(
-                tooltip: "Summation",
-                child: const Icon(Icons.summarize),
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ScoutingEntriesPage(),
-                    ),
-                  );
+              const SizedBox(height: 5),
+              DialogTextInput(
+                label: "Scouter name",
+                textEditingController: _scouterController,
+                onSubmit: (value) {
+                  Scouting.data.scouter = value;
                 },
+                initialText: Scouting.data.scouter,
               ),
-              SizedBox(
-                width: (MediaQuery.of(context).size.width - 140),
-              ),
-              FloatingActionButton(
-                heroTag: 1,
-                tooltip: "Scout",
-                child: const Icon(Icons.login_outlined),
-                onPressed: () async {
-                  final scouterName = _scouterController.text.trim();
-                  final gameNumber = _gameController.text.trim();
-
-                  if (scouterName.isEmpty ||
-                      _selectedTeam == null ||
-                      gameNumber.isEmpty) {
-                    // Show an alert if any required field is empty
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Validation Error'),
-                          content:
-                              const Text('Please fill in all required fields.'),
-                          actions: [
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                    return;
-                  }
-
-                  // Save the data if all fields are filled
-                  localStorage?.setInt("game", int.parse(gameNumber));
-                  localStorage?.setString("scouter", scouterName);
-                  localStorage?.setString("scoutedTeam", _selectedTeam ?? "");
-
-                  Scouting.advance(context);
+              const SizedBox(height: 5),
+              DialogTextInput(
+                onSubmit: (value) {
+                  setState(() {
+                    previousGame = Scouting.data.game ?? 0;
+                    Scouting.data.game = int.tryParse(value);
+                  });
                 },
+                label: "Game #",
+                textEditingController: _gameController,
+                formatter: TextFormatterBuilder.integerTextFormatter(),
+              ),
+              const SizedBox(height: 5),
+              DropdownMenu<String>(
+                label: const Text(
+                  "Scouting On",
+                ),
+                initialSelection: Scouting.data.scoutedTeam,
+                onSelected: (value) {
+                  setState(() {
+                    _selectedTeam = value.toString();
+                    _selectedTeamIndex = teams.indexOf(_selectedTeam ?? "");
+                    Scouting.data.scoutedTeam = value;
+                  });
+                },
+                textStyle: TextStyle(
+                  color: isRedAllianceTeamSelected
+                      ? Colors.redAccent
+                      : Colors.blueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+                dropdownMenuEntries: getTeamDropdownEntries(),
+                width: MediaQuery.of(context).size.width - 5,
+              ),
+              const SizedBox(height: 10),
+              DropdownMenu<MatchType>(
+                label: const Text("Match type"),
+                initialSelection: MatchType.normal,
+                dropdownMenuEntries: MatchType.values
+                    .map((type) => DropdownMenuEntry(
+                          value: type,
+                          label: type.name.toTitleCase(),
+                        ))
+                    .toList(),
+                onSelected: (matchType) {
+                  Scouting.data.matchType = matchType ?? MatchType.normal;
+                },
+                width: MediaQuery.of(context).size.width - 100,
               ),
             ],
           ),
+        ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const SizedBox(
+                  width: 5,
+                ),
+                FloatingActionButton(
+                  tooltip: "Summation",
+                  child: const Icon(Icons.summarize),
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ScoutingEntriesPage(),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(
+                  width: (MediaQuery.of(context).size.width - 140),
+                ),
+                FloatingActionButton(
+                  heroTag: 1,
+                  tooltip: "Scout",
+                  child: const Icon(Icons.login_outlined),
+                  onPressed: () async {
+                    final scouterName = _scouterController.text.trim();
+                    final gameNumber = _gameController.text.trim();
+
+                    if (scouterName.isEmpty ||
+                        _selectedTeam == null ||
+                        gameNumber.isEmpty) {
+                      // Show an alert if any required field is empty
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Validation Error'),
+                            content: const Text(
+                                'Please fill in all required fields.'),
+                            actions: [
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return;
+                    }
+
+                    // Save the data if all fields are filled
+                    localStorage?.setInt("game", int.parse(gameNumber));
+                    localStorage?.setString("scouter", scouterName);
+                    localStorage?.setString("scoutedTeam", _selectedTeam ?? "");
+
+                    Scouting.advance(context);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else {
+      return AlertDialog(
+        content: SizedBox(
+          height: 100,
+          width: 350,
+          child: Row(
+            children: [
+              Expanded(
+                child: DialogTextInput(
+                  initialText: localStorage?.getString("password"),
+                  obscureText: !_showPassword,
+                  onSubmit: (value) {},
+                  onChanged: (value) {
+                    _password = value ?? "";
+                  },
+                  label: "Login Password",
+                  suffixIcon: GestureDetector(
+                    onLongPress: () {
+                      setState(() {
+                        _showPassword = true;
+                      });
+                    },
+                    onLongPressUp: () {
+                      setState(() {
+                        _showPassword = false;
+                      });
+                    },
+                    child: Icon(_showPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              validatePassword(_password);
+            },
+            child: const Text("Submit"),
+          ),
         ],
-      ),
-    );
+      );
+    }
+  }
+
+  void validatePassword(String password) async {
+    if (password.isEmpty) return;
+
+    final (passwordData, successful) =
+        await DatabaseAPI.instance.downloadJson("password", "password");
+
+    if (!successful) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                content: const SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Text(
+                    "Wrong password!",
+                    textScaler: TextScaler.linear(2),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Close"),
+                  ),
+                ],
+              ));
+    } else {
+      if (password == passwordData['password']) {
+        localStorage!.setString("password", password);
+
+        setState(() {
+          loggedIn = true;
+        });
+      }
+    }
   }
 
   List<DropdownMenuEntry<String>> getTeamDropdownEntries() {

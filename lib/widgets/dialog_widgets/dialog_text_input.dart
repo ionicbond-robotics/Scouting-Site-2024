@@ -4,13 +4,16 @@ import 'package:flutter/services.dart';
 
 class DialogTextInput extends StatefulWidget {
   final Function(String value) onSubmit;
+  final Function(String? value)? onChanged;
   final TextInputFormatter? formatter;
   final String? label;
   final String? initialText;
   final bool allowEmptySubmission;
   final bool enabled;
+  final bool obscureText;
   final TextInputType keyboard;
   final TextEditingController? textEditingController;
+  final Widget? suffixIcon;
 
   const DialogTextInput({
     super.key,
@@ -22,6 +25,9 @@ class DialogTextInput extends StatefulWidget {
     this.formatter,
     this.textEditingController,
     this.keyboard = TextInputType.text,
+    this.onChanged,
+    this.obscureText = false,
+    this.suffixIcon,
   });
 
   @override
@@ -58,29 +64,32 @@ class _DialogTextInputState extends State<DialogTextInput> {
           focused = value;
         },
         child: TextField(
-          enabled: widget.enabled,
-          onSubmitted: (value) {
-            if (value.isNotEmpty || widget.allowEmptySubmission) {
-              widget.onSubmit.call(value);
-              focused = false;
-            }
-          },
-          onTapOutside: (_) {
-            if (!focused) {
-              return;
-            }
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          controller: textEditingController,
-          inputFormatters:
-              (widget.formatter != null) ? [widget.formatter!] : null,
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-            labelText: widget.label,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
-          ),
-          keyboardType: widget.keyboard,
-        ),
+            obscureText: widget.obscureText,
+            enabled: widget.enabled,
+            onSubmitted: (value) {
+              if (value.isNotEmpty || widget.allowEmptySubmission) {
+                widget.onSubmit.call(value);
+                focused = false;
+              }
+            },
+            onChanged: widget.onChanged?.call,
+            onTapOutside: (_) {
+              if (!focused) {
+                return;
+              }
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            controller: textEditingController,
+            inputFormatters:
+                (widget.formatter != null) ? [widget.formatter!] : null,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+              labelText: widget.label,
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+              suffixIcon: widget.suffixIcon,
+            ),
+            keyboardType: widget.keyboard),
       ),
     );
   }

@@ -34,7 +34,7 @@ class DatabaseAPI {
     }
   }
 
-  Future<Map<String, dynamic>> downloadJson(
+  Future<(Map<String, dynamic>, bool)> downloadJson(
       String collectionPath, String documentId) async {
     if (firestore == null) {
       throw Exception("Firebase not initialized");
@@ -44,9 +44,11 @@ class DatabaseAPI {
       DocumentSnapshot docSnapshot =
           await firestore!.collection(collectionPath).doc(documentId).get();
       if (docSnapshot.exists) {
-        return docSnapshot.data() as Map<String, dynamic>;
+        return (docSnapshot.data() as Map<String, dynamic>, true);
       } else {
-        throw Exception("No data found at the specified document.");
+        Map<String, dynamic> map = {};
+        return (map, false);
+        // throw Exception("No data found at the specified document.");
       }
     } on FirebaseException catch (_) {
       rethrow;
