@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fl_chart/fl_chart.dart';
+import 'package:scouting_site/pages/form_page.dart';
 
 // Project imports:
 import 'package:scouting_site/services/scouting/form_data.dart';
@@ -24,7 +25,26 @@ class TeamOverviewPage extends StatefulWidget {
 }
 
 class _TeamOverviewPageState extends State<TeamOverviewPage> {
+  Map<String, double> questionAverages = {};
+  Map<String, double> selectedTeamQuestionAverages = {};
+  Map<String, Map<String, bool>> questionSwitchesMap = {};
   double screenWidth = 0;
+  Map<String, bool> pagesActive = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    calculateQuestionAverages();
+
+    for (var page in widget.forms.last.pages) {
+      questionSwitchesMap[page.pageName] = {};
+
+      for (var question in page.questions) {
+        questionSwitchesMap[page.pageName]?[question.questionText] = true;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +156,7 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
         .toList();
     double switchesSize = (screenWidth > 500) ? 500 : screenWidth;
 
-    for (var page in teamForms.first.pages) {
+    for (var page in teamForms.last.pages) {
       questionsToggles.add(
         DialogToggleSwitch(
           label: page.pageName,
@@ -144,7 +164,17 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
           // style: const TextStyle(
           //   fontWeight: FontWeight.bold,
           // ),
-          onToggle: (value) {},
+          initialValue: pagesActive[page.pageName] ?? true,
+          onToggle: (value) {
+            pagesActive[page.pageName] = value;
+
+            setState(() {
+              questionSwitchesMap[page.pageName]
+                  ?.forEach((questionText, activated) {
+                questionSwitchesMap[page.pageName]?[questionText] = value;
+              });
+            });
+          },
         ),
       );
       questionsToggles.add(const SizedBox(height: 5));
@@ -154,8 +184,16 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
             width: switchesSize,
             height: 40,
             child: DialogToggleSwitch(
-              onToggle: (value) {},
+              onToggle: (value) {
+                setState(() {
+                  questionSwitchesMap[page.pageName]?[question.questionText] =
+                      value;
+                });
+              },
               label: question.questionText,
+              initialValue: questionSwitchesMap[page.pageName]
+                      ?[question.questionText] ??
+                  false,
             ),
           ),
         );
@@ -228,5 +266,46 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
         .toList();
 
     return AvgsGraph(avgSpots: avgSpots, teamSpots: teamSpots);
+  }
+
+  void calculateQuestionAverages() {
+    Map<String, List<double>> questionScores = {};
+    Map<String, List<double>> selectedTeamQuestionScores = {};
+    // Loop through all forms
+    for (FormData form in widget.forms) {
+      // Loop through each page in the form
+      for (var page in form.pages) {
+        // Loop through each question on the page
+        for (var question in page.questions) {
+          String questionKey = "${page.pageName}_${question.questionText}";
+          // Initialize the list if it's the first time encountering the question
+          if (!questionScores.containsKey(questionKey)) {
+            questionScores[questionKey] = [];
+          }
+
+          // Add the score to the question's list
+          questionScores[questionKey]!.add(question.score);
+
+          if (extractNumber(form.scoutedTeam ?? "0") == widget.team) {
+            if (!selectedTeamQuestionScores.containsKey(questionKey)) {
+              selectedTeamQuestionScores[questionKey] = [];
+            }
+
+            selectedTeamQuestionScores[questionKey]!.add(question.score);
+          }
+        }
+      }
+    }
+
+    // Calculate the average for each question
+    questionScores.forEach((questionText, scores) {
+      double average = scores.reduce((a, b) => a + b) / scores.length;
+      questionAverages[questionText] = average;
+    });
+
+    selectedTeamQuestionScores.forEach((questionText, scores) {
+      double average = scores.reduce((a, b) => a + b) / scores.length;
+      selectedTeamQuestionAverages[questionText] = average;
+    });
   }
 }
