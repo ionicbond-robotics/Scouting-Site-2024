@@ -7,7 +7,9 @@ import 'package:scouting_site/pages/form_page.dart';
 
 // Project imports:
 import 'package:scouting_site/services/scouting/form_data.dart';
+import 'package:scouting_site/services/scouting/form_page_data.dart';
 import 'package:scouting_site/services/scouting/helper_methods.dart';
+import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/avgs_graph.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_toggle_switch.dart';
@@ -228,10 +230,21 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
         int sameGameAmount = 0;
         bool addTeamScore = false;
         for (FormData gameForm in gameForms[game] ?? []) {
-          currentGameSum += gameForm.score;
+          double score = 0;
+          for (FormPageData page in gameForm.pages) {
+            for (Question question in page.questions) {
+              if ((questionSwitchesMap[page.pageName]
+                      ?[question.questionText]) ??
+                  true) {
+                score += question.score;
+              }
+            }
+          }
+
+          currentGameSum += score;
 
           if (extractNumber(gameForm.scoutedTeam ?? "") == widget.team) {
-            sameGameScoreSum += gameForm.score;
+            sameGameScoreSum += score;
             sameGameAmount++;
             addTeamScore = true;
           }
