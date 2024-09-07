@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fl_chart/fl_chart.dart';
-import 'package:scouting_site/pages/form_page.dart';
 
 // Project imports:
 import 'package:scouting_site/services/scouting/form_data.dart';
@@ -160,23 +159,12 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
 
     for (var page in teamForms.last.pages) {
       questionsToggles.add(
-        DialogToggleSwitch(
-          label: page.pageName,
+        Text(
+          page.pageName,
           textScaler: const TextScaler.linear(1.6),
-          // style: const TextStyle(
-          //   fontWeight: FontWeight.bold,
-          // ),
-          initialValue: pagesActive[page.pageName] ?? true,
-          onToggle: (value) {
-            pagesActive[page.pageName] = value;
-
-            setState(() {
-              questionSwitchesMap[page.pageName]
-                  ?.forEach((questionText, activated) {
-                questionSwitchesMap[page.pageName]?[questionText] = value;
-              });
-            });
-          },
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       );
       questionsToggles.add(const SizedBox(height: 5));
