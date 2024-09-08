@@ -74,9 +74,9 @@ jobs:
         include:
           - os: ubuntu-latest
             build-option: "web"
-            artifact-path: "build/linux/x64/release/bundle"
+            artifact-path: "build/web/"
             artifact-name: Scouing-Site
-            executable-type: portable
+            executable-type: html
 
     name: "Build - Web"
     needs: [formatting-analysis, test]
