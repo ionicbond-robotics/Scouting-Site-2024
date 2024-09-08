@@ -22,27 +22,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+        - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
+        - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
-          cache-path: ${{ runner.tool_cache }}/flutter/linux
+            flutter-version: ${{ env.FLUTTER_VERSION }}
+            cache: true
+            cache-path: ${{ runner.tool_cache }}/flutter/linux
 
-      - name: Install dependencies
+        - name: Install dependencies
         run: flutter pub get
 
-      - name: Generate mocks
+        - name: Generate mocks
         run: dart run build_runner build
 
-      - name: Verify formatting
+        - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed lib/* test/*
 
-      - name: Analyze project source
+        - name: Analyze project source
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
+        
   test:
     name: "Run Tests"
     runs-on: ubuntu-latest
