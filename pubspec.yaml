@@ -47,6 +47,7 @@ dependencies:
   import_sorter: ^4.6.0
   peanut: ^5.1.0
   http: ^1.2.2
+  build_runner: ^2.4.12
   
 dev_dependencies:
   flutter_test:
