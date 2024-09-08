@@ -1,6 +1,6 @@
 // Dart imports:
 import 'dart:convert';
-import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 
 // Flutter imports:
 import 'package:flutter/material.dart';
