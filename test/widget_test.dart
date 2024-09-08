@@ -25,7 +25,7 @@ void main() {
     bool isDarkMode = brightness == Brightness.dark;
     GlobalColors.primaryColor = isDarkMode ? Colors.black : Colors.white;
 
-    widgetTester.pumpWidget(
+    await widgetTester.pumpWidget(
       MaterialApp(
         title: 'Scouting Site',
         debugShowCheckedModeBanner: false,
@@ -34,7 +34,7 @@ void main() {
           brightness: isDarkMode ? Brightness.dark : Brightness.light,
           useMaterial3: true,
         ),
-        home: const HomePage(title: 'FRC-Scouting'),
+        home: const HomePage(),
       ),
     );
 

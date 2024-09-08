@@ -1,12 +1,12 @@
 // Dart imports:
 import 'dart:convert';
-import 'package:universal_html/html.dart' as html;
 
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:universal_html/html.dart' as html;
 
 // Project imports:
 import 'package:scouting_site/pages/form_page.dart';
