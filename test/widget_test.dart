@@ -48,7 +48,7 @@ void main() {
     await widgetTester.pumpAndSettle();
 
     final scoutingOnTeamField =
-        find.widgetWithText(DropdownMenu, "Scouting On");
+        find.widgetWithText(DropdownMenu<String>, "Scouting On");
 
     expect(scoutingOnTeamField, findsOneWidget);
 
