@@ -77,7 +77,7 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
               SizedBox(
                 height: 600,
                 width: screenWidth - 150,
-                child: getTotalScoreGraph(),
+                child: getTotalScoreGraph(questionSwitchesMap),
               ),
               const SizedBox(height: 10),
               Row(
@@ -197,7 +197,8 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
     return questionsToggles;
   }
 
-  Widget getTotalScoreGraph() {
+  Widget getTotalScoreGraph(
+      Map<String, Map<String, bool>> questionSwitchesMap) {
     Map<int, List<FormData>> gameForms = {};
 
     for (var form in widget.forms) {
@@ -266,7 +267,14 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
             entry.key.toDouble(), double.parse(entry.value.toStringAsFixed(2))))
         .toList();
 
-    return AvgsGraph(avgSpots: avgSpots, teamSpots: teamSpots);
+    // List<FlSpot> zeroSpots = teamScores.entries
+    //     .map((entry) => FlSpot(entry.key.toDouble(), 0.0))
+    //     .toList();
+
+    return AvgsGraph(
+      avgSpots: avgSpots,
+      teamSpots: teamSpots,
+    );
   }
 
   void calculateQuestionAverages() {
