@@ -73,12 +73,12 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            build-option: "linux"
+            build-option: "web"
             artifact-path: "build/linux/x64/release/bundle"
-            artifact-name: Elastic-Linux
+            artifact-name: Scouing-Site
             executable-type: portable
 
-    name: "Build - ${{ matrix.artifact-name }}"
+    name: "Build - Web"
     needs: [formatting-analysis, test]
     runs-on: ${{ matrix.os }}
 
@@ -102,8 +102,5 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Generate icons
-        run: dart run flutter_launcher_icons
-
       - name: Build app
-        run: flutter build web --web-renderer html --release
+        run: flutter build web --web-renderer html
