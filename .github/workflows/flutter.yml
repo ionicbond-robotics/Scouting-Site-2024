@@ -43,7 +43,7 @@ jobs:
 
         - name: Analyze project source
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
-        
+
   test:
     name: "Run Tests"
     runs-on: ubuntu-latest
@@ -68,7 +68,7 @@ jobs:
       - name: Run tests
         run: flutter test --coverage
 
-   build:
+  build:
     strategy:
       fail-fast: false
       matrix:
