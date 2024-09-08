@@ -67,22 +67,17 @@ jobs:
       - name: Run tests
         run: flutter test --coverage
 
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-  build:
+   build:
     strategy:
       fail-fast: false
       matrix:
         include:
-         - os: ubuntu-latest
+          - os: ubuntu-latest
             build-option: "linux"
             artifact-path: "build/linux/x64/release/bundle"
             artifact-name: Elastic-Linux
             executable-type: portable
-
-    name: "Build - ${{ matrix.artifact-name }}"
+    name: "Build - Web"
     needs: [formatting-analysis, test]
     runs-on: ${{ matrix.os }}
 
