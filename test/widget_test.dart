@@ -18,25 +18,8 @@ import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 
 void main() {
-  testWidgets("Form Login", (WidgetTester widgetTester) async {
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-
-    bool isDarkMode = brightness == Brightness.dark;
-    GlobalColors.primaryColor = isDarkMode ? Colors.black : Colors.white;
-
-    await widgetTester.pumpWidget(
-      MaterialApp(
-        title: 'Scouting Site',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: GlobalColors.primaryColor,
-          brightness: isDarkMode ? Brightness.dark : Brightness.light,
-          useMaterial3: true,
-        ),
-        home: const HomePage(),
-      ),
-    );
+  testWidgets("Scouter Details Test", (WidgetTester widgetTester) async {
+    await createApp(widgetTester);
 
     final scouterNameField =
         find.widgetWithText(DialogTextInput, "Scouter name");
@@ -47,12 +30,37 @@ void main() {
     await widgetTester.testTextInput.receiveAction(TextInputAction.done);
     await widgetTester.pumpAndSettle();
 
+    final gameField = find.widgetWithText(DialogTextInput, "Game #");
+    expect(gameField, findsOneWidget);
+
+    await widgetTester.enterText(gameField, "1");
+    await widgetTester.testTextInput.receiveAction(TextInputAction.done);
+    await widgetTester.pumpAndSettle();
+
     final scoutingOnTeamField =
         find.widgetWithText(DropdownMenu<String>, "Scouting On");
 
     expect(scoutingOnTeamField, findsOneWidget);
-
-    final gameField = find.widgetWithText(DialogTextInput, "Game #");
-    expect(gameField, findsOneWidget);
   });
+}
+
+Future<void> createApp(WidgetTester widgetTester) async {
+  var brightness =
+      SchedulerBinding.instance.platformDispatcher.platformBrightness;
+
+  bool isDarkMode = brightness == Brightness.dark;
+  GlobalColors.primaryColor = isDarkMode ? Colors.black : Colors.white;
+
+  await widgetTester.pumpWidget(
+    MaterialApp(
+      title: 'Scouting Site',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: GlobalColors.primaryColor,
+        brightness: isDarkMode ? Brightness.dark : Brightness.light,
+        useMaterial3: true,
+      ),
+      home: const HomePage(),
+    ),
+  );
 }
