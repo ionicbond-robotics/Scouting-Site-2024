@@ -126,7 +126,9 @@ class Scouting {
     if (localStorage == null) {
       loadLocalStorage();
     }
+
     initializeData();
+
     await sendUnsentFormEntries();
 
     _matchesTeamsPair = await getEventTeamsFromJson();

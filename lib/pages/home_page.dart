@@ -1,9 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:scouting_site/pages/login_page.dart';
 
 // Project imports:
+import 'package:scouting_site/pages/login_page.dart';
 import 'package:scouting_site/pages/summation/scouting_entries_page.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/localstorage.dart';
@@ -47,12 +47,10 @@ class _HomePageState extends State<HomePage> {
   final _scouterController = TextEditingController();
   final _gameController = TextEditingController();
 
-  List<String> teams = [];
-
+  List<String> _teams = [];
   String? _selectedTeam;
-
   int _selectedTeamIndex = -1;
-  int previousGame = 0;
+  int _previousGame = 0;
 
   @override
   void initState() {
@@ -63,8 +61,7 @@ class _HomePageState extends State<HomePage> {
     _selectedTeam = Scouting.data.scoutedTeam;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  void _updateTeams() {
     if (Scouting.data.game != null) {
       List<String> gameTeams = [];
 
@@ -72,23 +69,30 @@ class _HomePageState extends State<HomePage> {
       redAlliance[Scouting.data.game]?.forEach((team) => gameTeams.add(team));
       blueAlliance[Scouting.data.game]?.forEach((team) => gameTeams.add(team));
 
-      teams = gameTeams;
+      _teams = gameTeams;
     } else {
       var (redAlliance, blueAlliance) = Scouting.matchesTeamsPair();
 
       for (var game in redAlliance.keys) {
-        teams.addAll(redAlliance[game] ?? []);
-        teams.addAll(blueAlliance[game] ?? []);
+        _teams.addAll(redAlliance[game] ?? []);
+        _teams.addAll(blueAlliance[game] ?? []);
       }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _updateTeams();
 
     if (_selectedTeamIndex != -1 &&
-        previousGame != Scouting.data.game &&
-        (!teams.contains(Scouting.data.scoutedTeam) ||
-            teams.indexOf(Scouting.data.scoutedTeam ?? "") !=
+        _previousGame != Scouting.data.game &&
+        (!_teams.contains(Scouting.data.scoutedTeam) ||
+            _teams.indexOf(Scouting.data.scoutedTeam ?? "") !=
                 _selectedTeamIndex)) {
       setState(() {
-        _selectedTeam = teams[_selectedTeamIndex];
+        _selectedTeam = _teams.isNotEmpty
+            ? _teams[0]
+            : null; // Default to the first team or null
         Scouting.data.scoutedTeam = _selectedTeam;
       });
     }
@@ -123,7 +127,7 @@ class _HomePageState extends State<HomePage> {
             DialogTextInput(
               onSubmit: (value) {
                 setState(() {
-                  previousGame = Scouting.data.game ?? 0;
+                  _previousGame = Scouting.data.game ?? 0;
                   Scouting.data.game = int.tryParse(value);
                 });
               },
@@ -140,8 +144,12 @@ class _HomePageState extends State<HomePage> {
               onSelected: (value) {
                 setState(() {
                   _selectedTeam = value.toString();
-                  _selectedTeamIndex = teams.indexOf(_selectedTeam ?? "");
-                  Scouting.data.scoutedTeam = value;
+                  _selectedTeamIndex = _teams.indexOf(_selectedTeam ?? "");
+                  if (!_teams.contains(_selectedTeam)) {
+                    _selectedTeam = null;
+                    _selectedTeamIndex = -1;
+                  }
+                  Scouting.data.scoutedTeam = _selectedTeam;
                 });
               },
               textStyle: TextStyle(
@@ -205,8 +213,8 @@ class _HomePageState extends State<HomePage> {
 
                   if (scouterName.isEmpty ||
                       _selectedTeam == null ||
-                      gameNumber.isEmpty) {
-                    // Show an alert if any required field is empty
+                      gameNumber.isEmpty ||
+                      !_teams.contains(_selectedTeam)) {
                     showDialog(
                       context: context,
                       builder: (context) {
@@ -228,7 +236,6 @@ class _HomePageState extends State<HomePage> {
                     return;
                   }
 
-                  // Save the data if all fields are filled
                   localStorage?.setInt("game", int.parse(gameNumber));
                   localStorage?.setString("scouter", scouterName);
                   localStorage?.setString("scoutedTeam", _selectedTeam ?? "");
@@ -245,14 +252,12 @@ class _HomePageState extends State<HomePage> {
 
   List<DropdownMenuEntry<String>> getTeamDropdownEntries() {
     List<DropdownMenuEntry<String>> entries = [];
-    if (teams.isNotEmpty) {
-      for (int i = 0; i < teams.length; i++) {
+    if (_teams.isNotEmpty) {
+      for (int i = 0; i < _teams.length; i++) {
         bool blueAlliance = i > 2;
         String labelText =
-            "${blueAlliance ? "Blue" : "Red"} ${(i + 1) % 3 == 0 ? 3 : (i + 1) % 3}: ${teams[i]}";
-        bool isSelected = i == teams.indexOf(Scouting.data.scoutedTeam ?? "");
-
-        // print(Scouting.data.scoutedTeam);
+            "${blueAlliance ? "Blue" : "Red"} ${(i + 1) % 3 == 0 ? 3 : (i + 1) % 3}: ${_teams[i]}";
+        bool isSelected = i == _teams.indexOf(Scouting.data.scoutedTeam ?? "");
 
         if (isSelected) {
           _selectedTeamIndex = i;
@@ -268,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
-            value: teams[i],
+            value: _teams[i],
           ),
         );
       }

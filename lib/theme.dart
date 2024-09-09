@@ -11,7 +11,7 @@ class GlobalColors {
   static const Color appBarColor = Colors.black;
   static Color get backgroundColor {
     if (primaryColor == Colors.white) return primaryColor;
-    return primaryColor.withRed(30).withBlue(30).withGreen(30);
+    return const Color.fromRGBO(30, 30, 30, 255);
   }
 
   static Color get backButtonColor {
