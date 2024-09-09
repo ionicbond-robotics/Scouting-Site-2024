@@ -27,6 +27,8 @@ class AveragesPage extends StatefulWidget {
 class _AveragesPageState extends State<AveragesPage> {
   List<FormData> _formsData = [];
 
+  Map<String, double> _pageAvgs = {};
+  double _totalAllTeamsAvg = 0;
   String _sortBy = "total_score";
   Map<String, dynamic> _searchQueryMap = {};
 
@@ -63,7 +65,22 @@ class _AveragesPageState extends State<AveragesPage> {
         sortByPage(_formsData, _sortBy);
         break;
     }
+
+    for (var form in _formsData) {
+      for (var page in form.pages) {
+        _pageAvgs[page.pageName] = (_pageAvgs[page.pageName] ?? 0) + page.score;
+      }
+    }
+
+    _pageAvgs.map((pageName, score) {
+      _totalAllTeamsAvg += score;
+      return MapEntry(pageName, score / _formsData.length);
+    });
+
+    _totalAllTeamsAvg /= _pageAvgs.length;
+
     _formsData = handleSearchQuery(_formsData, _searchQueryMap);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -352,7 +369,20 @@ class _AveragesPageState extends State<AveragesPage> {
       if (pageNames.contains(page.pageName)) {
         if (data.map((page_) => page_.pageName).contains(page.pageName)) {
           double score = page.score;
-          cells.add(DataCell(Text(getNumAsFixed(score))));
+          cells.add(
+            DataCell(
+              Container(
+                padding: const EdgeInsets.only(left: 5, right: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: getColorByScore(score, _pageAvgs[page.pageName] ?? 0),
+                ),
+                child: (Text(
+                  getNumAsFixed(score),
+                )),
+              ),
+            ),
+          );
           totalScore += score;
         } else {
           cells.add(DataCell.empty);
@@ -360,7 +390,20 @@ class _AveragesPageState extends State<AveragesPage> {
       }
     }
 
-    cells.add(DataCell(Text(getNumAsFixed(totalScore))));
+    cells.add(
+      DataCell(
+        Container(
+          padding: const EdgeInsets.only(left: 5, right: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: getColorByScore(totalScore, _totalAllTeamsAvg),
+          ),
+          child: (Text(
+            getNumAsFixed(totalScore),
+          )),
+        ),
+      ),
+    );
 
     return cells;
   }
@@ -425,5 +468,20 @@ class _AveragesPageState extends State<AveragesPage> {
     }
 
     return teamAvgs;
+  }
+
+  Color getColorByScore(double score, double pageAvg) {
+    double precentage = score / pageAvg;
+    if (precentage <= 0.25) {
+      return Colors.redAccent.shade400;
+    } else if (precentage <= 0.75) {
+      return Colors.transparent;
+    } else if (precentage <= 0.9) {
+      return Colors.redAccent.shade200;
+    } else if (precentage < 0.99) {
+      return Colors.greenAccent.shade100;
+    } else {
+      return Colors.blueAccent.shade100;
+    }
   }
 }
