@@ -146,9 +146,6 @@ class _AveragesPageState extends State<AveragesPage> {
                           ),
                         ),
                         ...getPagesDataColumns(_formsData),
-                        const DataColumn(
-                          label: Text("Actions"),
-                        ),
                       ],
                       rows: getDataTableRows(),
                     ),
@@ -200,31 +197,23 @@ class _AveragesPageState extends State<AveragesPage> {
     List<DataRow> rows = [];
     for (FormData form in _formsData) {
       rows.add(DataRow(cells: [
-        DataCell(Text(form.scoutedTeam ?? "")),
-        ...getPagesDataRows(pages: _formsData.first.pages, data: form.pages),
         DataCell(
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.remove_red_eye_rounded),
-                tooltip: "Team Overview",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TeamOverviewPage(
-                        team: extractNumber(form.scoutedTeam ?? ""),
-                        forms: widget.formsData ?? [],
-                        avgs: _formsData,
-                      ),
+          TextButton(
+              child: Text(form.scoutedTeam ?? ""),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TeamOverviewPage(
+                      team: extractNumber(form.scoutedTeam ?? ""),
+                      forms: widget.formsData ?? [],
+                      avgs: _formsData,
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
+                  ),
+                );
+              }),
         ),
+        ...getPagesDataRows(pages: _formsData.first.pages, data: form.pages),
       ]));
     }
 

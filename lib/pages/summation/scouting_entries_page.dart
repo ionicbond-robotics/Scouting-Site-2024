@@ -187,9 +187,6 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
                           ),
                         ),
                         ...getPagesDataColumns(_formsData),
-                        const DataColumn(
-                          label: Text("Actions"),
-                        ),
                       ],
                       rows: getDataTableRows(),
                     ),
@@ -286,48 +283,42 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
   List<DataRow> getDataTableRows() {
     List<DataRow> rows = [];
     for (FormData form in _formsData) {
-      rows.add(DataRow(cells: [
-        if (_showScouterField) DataCell(Text(form.scouter ?? "")),
-        DataCell(Text((form.matchType.name).toTitleCase())),
-        DataCell(Text(form.scoutedTeam ?? "")),
-        DataCell(Text(form.game?.toString() ?? "0")),
-        ...getPagesDataRows(pages: _formsData.first.pages, data: form.pages),
-        DataCell(
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.expand_more),
-                tooltip: "Answers",
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(
-                              "${form.scoutedTeam} - Game #${form.game} by ${form.scouter}"),
-                          content: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    ...getAnswersWidgetsForDialog(form)
-                                  ],
-                                ),
+      rows.add(
+        DataRow(
+          cells: [
+            if (_showScouterField) DataCell(Text(form.scouter ?? "")),
+            DataCell(Text((form.matchType.name).toTitleCase())),
+            DataCell(TextButton(
+              child: Text(form.scoutedTeam ?? ""),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                            "${form.scoutedTeam} - Game #${form.game} by ${form.scouter}"),
+                        content: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SingleChildScrollView(
+                              child: Column(
+                                children: [...getAnswersWidgetsForDialog(form)],
                               ),
-                            ],
-                          ),
-                        );
-                      });
-                },
-              ),
-            ],
-          ),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              },
+            )),
+            DataCell(Text(form.game?.toString() ?? "0")),
+            ...getPagesDataRows(
+                pages: _formsData.first.pages, data: form.pages),
+          ],
         ),
-      ]));
+      );
     }
 
     return rows;
