@@ -52,20 +52,20 @@ class _AveragesPageState extends State<AveragesPage> {
 
     _formsData = calculateAvgs(_formsData).values.toList();
 
-    // switch (_sortBy) {
-    //   case "total_score":
-    //     sortByTotalScore(_formsData);
-    //     break;
-    //   case "game":
-    //     sortByGame(_formsData);
-    //     break;
-    //   case "team":
-    //     sortByTeam(_formsData);
-    //     break;
-    //   default:
-    //     sortByPage(_formsData, _sortBy);
-    //     break;
-    // }
+    switch (_sortBy) {
+      case "total_score":
+        sortByTotalScore(_formsData);
+        break;
+      case "game":
+        sortByGame(_formsData);
+        break;
+      case "team":
+        sortByTeam(_formsData);
+        break;
+      default:
+        sortByPage(_formsData, _sortBy);
+        break;
+    }
 
     for (var form in _formsData) {
       for (var page in form.pages) {
@@ -136,9 +136,9 @@ class _AveragesPageState extends State<AveragesPage> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      setState(() {
-                                        _sortBy = "team";
-                                      });
+                                      // setState(() {
+                                      // _sortBy = "team";
+                                      // });
                                     },
                                     tooltip: "Sort by Team",
                                     icon: const Icon(Icons.sort_outlined))
@@ -307,9 +307,9 @@ class _AveragesPageState extends State<AveragesPage> {
                   ),
                   IconButton(
                       onPressed: () {
-                        setState(() {
-                          _sortBy = page.pageName;
-                        });
+                        // setState(() {
+                        //   _sortBy = page.pageName;
+                        // });
                       },
                       tooltip: "Sort by ${page.pageName}",
                       icon: const Icon(Icons.sort_outlined))
@@ -335,9 +335,9 @@ class _AveragesPageState extends State<AveragesPage> {
               ),
               IconButton(
                   onPressed: () {
-                    setState(() {
-                      _sortBy = "total_score";
-                    });
+                    // setState(() {
+                    // _sortBy = "total_score";
+                    // });
                   },
                   tooltip: "Sort by Avg. Score",
                   icon: const Icon(Icons.sort_outlined))
