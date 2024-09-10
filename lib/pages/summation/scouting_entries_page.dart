@@ -175,13 +175,14 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
                                   ),
                                 ),
                                 IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _sortBy = "game";
-                                      });
-                                    },
-                                    tooltip: "Sort by Game",
-                                    icon: const Icon(Icons.sort_outlined))
+                                  onPressed: () {
+                                    setState(() {
+                                      _sortBy = "game";
+                                    });
+                                  },
+                                  tooltip: "Sort by Game",
+                                  icon: const Icon(Icons.sort_outlined),
+                                )
                               ],
                             ),
                           ),

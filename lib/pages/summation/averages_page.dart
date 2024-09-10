@@ -27,7 +27,7 @@ class AveragesPage extends StatefulWidget {
 class _AveragesPageState extends State<AveragesPage> {
   List<FormData> _formsData = [];
 
-  Map<String, double> _pageAvgs = {};
+  final Map<String, double> _pageAvgs = {};
   double _totalAllTeamsAvg = 0;
   String _sortBy = "total_score";
   Map<String, dynamic> _searchQueryMap = {};
@@ -51,20 +51,21 @@ class _AveragesPageState extends State<AveragesPage> {
     }).toList();
 
     _formsData = calculateAvgs(_formsData).values.toList();
-    switch (_sortBy) {
-      case "total_score":
-        sortByTotalScore(_formsData);
-        break;
-      case "game":
-        sortByGame(_formsData);
-        break;
-      case "team":
-        sortByTeam(_formsData);
-        break;
-      default:
-        sortByPage(_formsData, _sortBy);
-        break;
-    }
+
+    // switch (_sortBy) {
+    //   case "total_score":
+    //     sortByTotalScore(_formsData);
+    //     break;
+    //   case "game":
+    //     sortByGame(_formsData);
+    //     break;
+    //   case "team":
+    //     sortByTeam(_formsData);
+    //     break;
+    //   default:
+    //     sortByPage(_formsData, _sortBy);
+    //     break;
+    // }
 
     for (var form in _formsData) {
       for (var page in form.pages) {
