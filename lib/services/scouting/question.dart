@@ -90,7 +90,7 @@ class Question {
         res = evaluateMultipleChoice();
         break;
       case AnswerType.checkbox:
-        res = (evaluation as num) * ((answer as bool) ? 1.0 : 0.0);
+        res = (evaluation as num) * (((answer ?? false) as bool) ? 1.0 : 0.0);
         break;
       default:
         res = (evaluation as double) * (answer as num);
