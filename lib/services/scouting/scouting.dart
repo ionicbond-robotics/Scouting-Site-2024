@@ -22,54 +22,56 @@ class Scouting {
       pageName: "Autonomous",
       questions: [
         Question(
-          type: AnswerType.text,
-          questionText: "Notes amount",
+          type: AnswerType.checkbox,
+          questionText: "Autonomous?",
           evaluation: 2.0,
         ),
         Question(
-          type: AnswerType.dropdown,
-          questionText: "Start position",
-          options: [
-            "Top",
-            "Middle",
-          ],
-          evaluation: {
-            "Top": 1.0,
-            "Middle": 2.0,
-          },
-        ),
-        Question(
-          type: AnswerType.checkbox,
-          questionText: "Autonomous?",
-          evaluation: 5.0,
-        ),
-        Question(
-          type: AnswerType.multipleChoice,
-          options: [
-            "Yes",
-            "No",
-            "Brocolli",
-          ],
-          questionText: "How many?",
-          evaluation: {
-            "Yes": 1.0,
-            "No": 3.0,
-            "Brocolli": 4.0,
-          },
-        ),
-        Question(
-          type: AnswerType.number,
-          questionText: "Your opinion about canibalism",
-          evaluation: 12.0,
-        ),
-        Question(
           type: AnswerType.counter,
-          questionText: "Did they do it?",
+          questionText: "Amount of scored notes",
+          evaluation: 5.0,
           options: [
             0, // initial
             0, // min
           ],
+        ),
+      ],
+    ),
+    FormPageData(
+      pageName: "TeleOp",
+      questions: [
+        Question(
+          type: AnswerType.counter,
+          questionText: "Scored speaker notes",
           evaluation: 2.0,
+          options: [
+            0, // initial
+            0, // min
+          ],
+        ),
+        Question(
+          type: AnswerType.counter,
+          questionText: "Scored amp notes",
+          evaluation: 1.0,
+          options: [
+            0, // initial
+            0, // min
+          ],
+        ),
+      ],
+    ),
+    FormPageData(
+      pageName: "End-Game",
+      questions: [
+        Question(
+          type: AnswerType.checkbox,
+          questionText: "Trap",
+          evaluation: 10.0,
+        ),
+        Question(
+          type: AnswerType.checkbox,
+          questionText: "Climb",
+          evaluation: 5.0,
         ),
       ],
     ),
