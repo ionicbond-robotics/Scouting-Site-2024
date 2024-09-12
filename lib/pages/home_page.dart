@@ -144,11 +144,8 @@ class _HomePageState extends State<HomePage> {
               onSelected: (value) {
                 setState(() {
                   _selectedTeam = value.toString();
-                  _selectedTeamIndex = _teams.indexOf(_selectedTeam ?? "");
-                  if (!_teams.contains(_selectedTeam)) {
-                    _selectedTeam = null;
-                    _selectedTeamIndex = -1;
-                  }
+                  _selectedTeamIndex =
+                      _teams.indexOf(_selectedTeam ?? _teams[0]);
                   Scouting.data.scoutedTeam = _selectedTeam;
                 });
               },
