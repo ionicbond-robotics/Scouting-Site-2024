@@ -69,8 +69,8 @@ class Question {
         }
       } else {
         for (String key in (answer as Map<String, dynamic>).keys) {
-          if ((answer! as Map<String, dynamic>)[key] != true) {
-            (answer! as Map<String, dynamic>)[key] = false;
+          if ((answer as Map<String, dynamic>)[key] != true) {
+            (answer as Map<String, dynamic>)[key] = false;
           }
         }
       }
@@ -93,7 +93,7 @@ class Question {
         res = (evaluation as num) * (((answer ?? false) as bool) ? 1.0 : 0.0);
         break;
       default:
-        res = (evaluation as double) * (answer as num);
+        res = (evaluation as double) * ((answer ?? 0) as num);
     }
     return res;
   }

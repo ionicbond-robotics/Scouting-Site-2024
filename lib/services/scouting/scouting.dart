@@ -199,6 +199,7 @@ class Scouting {
   }
 
   static void onPagePop() {
+    _pagesContexts.removeAt(_currentPage);
     _currentPage--;
   }
 
