@@ -58,6 +58,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _scouterController.text = Scouting.data.scouter ?? '';
     _gameController.text = Scouting.data.game?.toString() ?? '';
+
+    _gameController.addListener(() {
+      submitGameNum(_gameController.text);
+    });
+
     _selectedTeam = Scouting.data.scoutedTeam;
   }
 
@@ -125,12 +130,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 5),
             DialogTextInput(
-              onSubmit: (value) {
-                setState(() {
-                  _previousGame = Scouting.data.game ?? 0;
-                  Scouting.data.game = int.tryParse(value);
-                });
-              },
+              onSubmit: submitGameNum,
               label: "Game #",
               textEditingController: _gameController,
               formatter: TextFormatterBuilder.integerTextFormatter(),
@@ -280,5 +280,12 @@ class _HomePageState extends State<HomePage> {
     }
 
     return entries;
+  }
+
+  void submitGameNum(String value) {
+    setState(() {
+      _previousGame = Scouting.data.game ?? 0;
+      Scouting.data.game = int.tryParse(value);
+    });
   }
 }
