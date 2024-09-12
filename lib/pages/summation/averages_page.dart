@@ -153,6 +153,58 @@ class _AveragesPageState extends State<AveragesPage> {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Key (Precentile): "),
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: getColorByScore(0, 100),
+                    ),
+                    child: (const Text("0-25")),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: getColorByScore(26, 100),
+                    ),
+                    child: (const Text("25-75")),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: getColorByScore(76, 100),
+                    ),
+                    child: (const Text("75-90")),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: getColorByScore(98, 100),
+                    ),
+                    child: (const Text("90-99")),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: getColorByScore(100, 100),
+                    ),
+                    child: (const Text("99-100")),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -467,9 +519,9 @@ class _AveragesPageState extends State<AveragesPage> {
     } else if (precentage <= 0.75) {
       return Colors.transparent;
     } else if (precentage <= 0.9) {
-      return Colors.redAccent.shade200;
+      return Colors.redAccent.shade100;
     } else if (precentage < 0.99) {
-      return Colors.greenAccent.shade100;
+      return Colors.greenAccent.shade400;
     } else {
       return Colors.blueAccent.shade100;
     }
