@@ -233,6 +233,8 @@ class Scouting {
 
   static Future<void> sendData(Map<String, dynamic> json,
       {String? header}) async {
+    if (data.scoutedTeam == null) return;
+
     for (int i = 0; i < _pagesContexts.length; i++) {
       Navigator.pop(_pagesContexts[i]);
     }
