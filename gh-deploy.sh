@@ -6,7 +6,10 @@ set -e  # Exit immediately if a command exits with a non-zero status
 if ! command -v git &> /dev/null; then
     echo "Error: Git is not installed."
     exit 1
+else 
+    git pull
 fi
+
 
 # Check if the directory is a Git repository
 if ! git rev-parse --is-inside-work-tree &> /dev/null; then
