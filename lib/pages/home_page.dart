@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 
 // Project imports:
 import 'package:scouting_site/pages/login_page.dart';
+import 'package:scouting_site/pages/summation/averages_page.dart';
 import 'package:scouting_site/pages/summation/scouting_entries_page.dart';
 import 'package:scouting_site/services/formatters/text_formatter_builder.dart';
 import 'package:scouting_site/services/localstorage.dart';
@@ -186,13 +187,13 @@ class _HomePageState extends State<HomePage> {
                 width: 5,
               ),
               FloatingActionButton(
-                tooltip: "Summation",
+                tooltip: "Entries",
                 child: const Icon(Icons.summarize),
                 onPressed: () async {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ScoutingEntriesPage(),
+                      builder: (context) => AveragesPage(),
                     ),
                   );
                 },
