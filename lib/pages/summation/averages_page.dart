@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:scouting_site/pages/summation/scouting_entries_page.dart';
 
 // Project imports:
 import 'package:scouting_site/pages/summation/team_overview.dart';
@@ -16,9 +17,9 @@ import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_text_input.dart';
 
 class AveragesPage extends StatefulWidget {
-  final List<FormData>? formsData;
+  List<FormData>? formsData;
 
-  const AveragesPage({super.key, this.formsData});
+  AveragesPage({super.key, this.formsData});
 
   @override
   State<StatefulWidget> createState() => _AveragesPageState();
@@ -27,7 +28,7 @@ class AveragesPage extends StatefulWidget {
 class _AveragesPageState extends State<AveragesPage> {
   List<FormData> _formsData = [];
 
-  final Map<String, double> _pageAvgs = {};
+  Map<String, double> _pageAvgs = {};
   double _totalAllTeamsAvg = 0;
   String _sortBy = "total_score";
   Map<String, dynamic> _searchQueryMap = {};
@@ -209,6 +210,32 @@ class _AveragesPageState extends State<AveragesPage> {
           ),
         ),
       ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            onPressed: () {
+              _pageAvgs = {};
+              getDocuments();
+            },
+            tooltip: "Re-Fetch Documents",
+            icon: const Icon(Icons.refresh_outlined),
+          ),
+          const SizedBox(width: 12),
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ScoutingEntriesPage(),
+                ),
+              );
+            },
+            tooltip: "All Entries",
+            child: const Icon(Icons.pie_chart),
+          ),
+        ],
+      ),
     );
   }
 
@@ -242,6 +269,7 @@ class _AveragesPageState extends State<AveragesPage> {
         _formsData = data.map((scout) {
           return FormData.fromJson(scout);
         }).toList();
+        widget.formsData = _formsData;
       });
     }
   }

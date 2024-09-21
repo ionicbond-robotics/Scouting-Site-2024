@@ -220,20 +220,6 @@ class _ScoutingEntriesPageState extends State<ScoutingEntriesPage> {
             icon: const Icon(Icons.refresh_outlined),
           ),
           const SizedBox(width: 12),
-          FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AveragesPage(
-                    formsData: _formsData,
-                  ),
-                ),
-              );
-            },
-            tooltip: "Averages",
-            child: const Icon(Icons.pie_chart),
-          ),
         ],
       ),
     );
