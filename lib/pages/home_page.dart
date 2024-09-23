@@ -118,63 +118,65 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Container(
         color: GlobalColors.backgroundColor,
-        child: Column(
-          children: [
-            const SizedBox(height: 5),
-            DialogTextInput(
-              label: "Scouter name",
-              textEditingController: _scouterController,
-              onSubmit: (value) {
-                Scouting.data.scouter = value;
-              },
-              initialText: Scouting.data.scouter,
-            ),
-            const SizedBox(height: 5),
-            DialogTextInput(
-              onSubmit: submitGameNum,
-              label: "Game #",
-              textEditingController: _gameController,
-              formatter: TextFormatterBuilder.integerTextFormatter(),
-            ),
-            const SizedBox(height: 5),
-            DropdownMenu<String>(
-              label: const Text(
-                "Scouting On",
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 5),
+              DialogTextInput(
+                label: "Scouter name",
+                textEditingController: _scouterController,
+                onSubmit: (value) {
+                  Scouting.data.scouter = value;
+                },
+                initialText: Scouting.data.scouter,
               ),
-              initialSelection: Scouting.data.scoutedTeam,
-              onSelected: (value) {
-                setState(() {
-                  _selectedTeam = value.toString();
-                  _selectedTeamIndex =
-                      _teams.indexOf(_selectedTeam ?? _teams[0]);
-                  Scouting.data.scoutedTeam = _selectedTeam;
-                });
-              },
-              textStyle: TextStyle(
-                color: isRedAllianceTeamSelected
-                    ? Colors.redAccent
-                    : Colors.blueAccent,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 5),
+              DialogTextInput(
+                onSubmit: submitGameNum,
+                label: "Game #",
+                textEditingController: _gameController,
+                formatter: TextFormatterBuilder.integerTextFormatter(),
               ),
-              dropdownMenuEntries: getTeamDropdownEntries(),
-              width: MediaQuery.of(context).size.width - 5,
-            ),
-            const SizedBox(height: 10),
-            DropdownMenu<MatchType>(
-              label: const Text("Match type"),
-              initialSelection: MatchType.normal,
-              dropdownMenuEntries: MatchType.values
-                  .map((type) => DropdownMenuEntry(
-                        value: type,
-                        label: type.name.toTitleCase(),
-                      ))
-                  .toList(),
-              onSelected: (matchType) {
-                Scouting.data.matchType = matchType ?? MatchType.normal;
-              },
-              width: MediaQuery.of(context).size.width - 100,
-            ),
-          ],
+              const SizedBox(height: 5),
+              DropdownMenu<String>(
+                label: const Text(
+                  "Scouting On",
+                ),
+                initialSelection: Scouting.data.scoutedTeam,
+                onSelected: (value) {
+                  setState(() {
+                    _selectedTeam = value.toString();
+                    _selectedTeamIndex =
+                        _teams.indexOf(_selectedTeam ?? _teams[0]);
+                    Scouting.data.scoutedTeam = _selectedTeam;
+                  });
+                },
+                textStyle: TextStyle(
+                  color: isRedAllianceTeamSelected
+                      ? Colors.redAccent
+                      : Colors.blueAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+                dropdownMenuEntries: getTeamDropdownEntries(),
+                width: MediaQuery.of(context).size.width - 5,
+              ),
+              const SizedBox(height: 10),
+              DropdownMenu<MatchType>(
+                label: const Text("Match type"),
+                initialSelection: MatchType.normal,
+                dropdownMenuEntries: MatchType.values
+                    .map((type) => DropdownMenuEntry(
+                          value: type,
+                          label: type.name.toTitleCase(),
+                        ))
+                    .toList(),
+                onSelected: (matchType) {
+                  Scouting.data.matchType = matchType ?? MatchType.normal;
+                },
+                width: MediaQuery.of(context).size.width - 100,
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: Column(
