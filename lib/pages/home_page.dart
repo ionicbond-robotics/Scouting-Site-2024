@@ -260,6 +260,9 @@ class _HomePageState extends State<HomePage> {
           });
         },
         label: "Scouting On",
+        keyboard: TextInputType.number,
+        formatter:
+            TextFormatterBuilder.integerTextFormatter(allowNegative: false),
       );
     }
   }
