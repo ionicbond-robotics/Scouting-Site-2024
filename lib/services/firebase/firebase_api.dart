@@ -10,11 +10,11 @@ class DatabaseAPI {
   Future<void> initialize() async {
     app = await Firebase.initializeApp(
       options: const FirebaseOptions(
-        apiKey: "AIzaSyCGekdY8ZwDLJ1_IyghTuqkPo6t8nvxRsQ",
-        appId: "1:230452191551:web:9460182892b9bc1048b38a",
-        messagingSenderId: "230452191551",
-        projectId: "frc-scouting-testing",
-        storageBucket: "frc-scouting-testing.appspot.com",
+        apiKey: "AIzaSyCSlnx2-0kUvWL_Eqaq-esyXEOfRU_Fmy8",
+        appId: "1:612713813970:web:fbcc90cc4f3268004e1a0b",
+        messagingSenderId: "612713813970",
+        projectId: "offseason-scouting",
+        storageBucket: "offseason-scouting.appspot.com",
       ),
     );
 
