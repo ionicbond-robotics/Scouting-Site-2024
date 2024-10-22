@@ -25570,7 +25570,7 @@ break}for(p=0;o=$.ad3,p<o.length;++p)A.e7(o[p],!1).Hg(null)
 if(b==null){o=new A.fY(Date.now(),0,!1).k(0)
 n=$.dg().b
 if(n==null)n=""
-b=o+" "+n}if($.avH)$.GK().A1(a,"scouting_2024isde1",b)
+b=o+" "+n}if($.avH)$.GK().A1(a,"scouting_2024isos2",b)
 else{o=$.eV
 if(o!=null)o.oV("String","scout_"+b,B.bm.FX(a,null))}A.aBw()
 case 1:return A.O(q,r)}})
@@ -85467,7 +85467,7 @@ A.e7(s,!1).dJ()},
 iG(){var s=0,r=A.Q(t.H),q=this,p,o,n
 var $async$iG=A.R(function(a,b){if(a===1)return A.N(b,r)
 while(true)switch(s){case 0:n=$.GK().b
-n=n==null?null:A.alL(n,n.gvB().lR("scouting_2024isde1")).jv(0)
+n=n==null?null:A.alL(n,n.gvB().lR("scouting_2024isos2")).jv(0)
 s=2
 return A.W(t.R3.b(n)?n:A.j9(n,t.Rp),$async$iG)
 case 2:p=b
@@ -85725,7 +85725,7 @@ Wt(){var s=0,r=A.Q(t.H),q=this,p,o,n,m
 var $async$iG=A.R(function(a,b){if(a===1)return A.N(b,r)
 while(true)switch(s){case 0:n={}
 m=$.GK().b
-m=m==null?null:A.alL(m,m.gvB().lR("scouting_2024isde1")).jv(0)
+m=m==null?null:A.alL(m,m.gvB().lR("scouting_2024isos2")).jv(0)
 s=2
 return A.W(t.R3.b(m)?m:A.j9(m,t.Rp),$async$iG)
 case 2:p=b
