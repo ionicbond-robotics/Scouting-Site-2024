@@ -5,12 +5,14 @@ class AvgsGraph extends StatelessWidget {
   final List<double> avgSpots;
   final List<double> teamSpots;
   final List<int> games;
+  final ChartPointInteractionCallback? onPointDoubleClicked;
 
   const AvgsGraph(
       {super.key,
       required this.avgSpots,
       required this.teamSpots,
-      required this.games});
+      required this.games,
+      this.onPointDoubleClicked});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,8 @@ class AvgsGraph extends StatelessWidget {
       primaryXAxis: NumericAxis(
         minimum: minX,
         maximum: maxX,
-        interval: 1, // Show each integer as a label
+        interval: (smallestDifference(games) ?? 1)
+            as double, // Show each integer as a label
         labelFormat: '{value}', // Show integer format
         majorGridLines:
             const MajorGridLines(width: 0), // Optional: hide grid lines
@@ -73,6 +76,7 @@ class AvgsGraph extends StatelessWidget {
           yValueMapper: (data, index) => data['spot'],
           color: Colors.red,
           width: 10,
+          onPointDoubleTap: onPointDoubleClicked,
           markerSettings: const MarkerSettings(
             isVisible: true,
             shape: DataMarkerType.circle,
@@ -84,5 +88,23 @@ class AvgsGraph extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  int? smallestDifference(List<int> nums) {
+    if (nums.length < 2) {
+      return null; // Not enough numbers to calculate a difference
+    }
+
+    nums.sort();
+    int minDiff = nums[1] - nums[0];
+
+    for (int i = 1; i < nums.length - 1; i++) {
+      int diff = nums[i + 1] - nums[i];
+      if (diff < minDiff) {
+        minDiff = diff;
+      }
+    }
+
+    return minDiff;
   }
 }
