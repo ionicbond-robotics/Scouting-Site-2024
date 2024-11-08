@@ -396,7 +396,71 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
     return AvgsGraph(
         avgSpots: avgValues,
         teamSpots: teamValues,
-        games: teamScores.keys.toList());
+        games: teamScores.keys.toList(),
+        onPointDoubleClicked: (details) {
+          if (details.pointIndex != null) {
+            FormData form = widget.forms.firstWhere((form) =>
+                form.game == teamScores.keys.toList()[details.pointIndex!] &&
+                extractNumber(form.scoutedTeam ?? "0000") == widget.team);
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(
+                        "${form.scoutedTeam} - Game #${form.game} by ${form.scouter}"),
+                    content: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SingleChildScrollView(
+                          child: Column(
+                            children: [...getAnswersWidgetsForDialog(form)],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                });
+          }
+        });
+  }
+
+  List<Widget> getAnswersWidgetsForDialog(FormData form) {
+    List<Widget> answersWidgets = [];
+
+    for (FormPageData page in form.pages) {
+      answersWidgets.add(Text(
+        page.pageName,
+        textScaler: const TextScaler.linear(1.5),
+      ));
+      for (Question question in page.questions) {
+        answersWidgets.add(Text(
+          "${question.questionText}: ${question.answer}",
+          textScaler: const TextScaler.linear(1.2),
+        ));
+      }
+      answersWidgets.add(const Divider());
+      answersWidgets.add(const SizedBox(height: 5));
+    }
+
+    answersWidgets.add(const SizedBox(height: 5));
+    answersWidgets.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.close_outlined),
+            iconSize: 20,
+            tooltip: "Close",
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+    return answersWidgets;
   }
 
   void calculateQuestionAverages() {

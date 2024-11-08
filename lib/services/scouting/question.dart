@@ -48,6 +48,10 @@ class Question {
   Map<String, dynamic> toJson() {
     _validateAnswer();
 
+    if (type == AnswerType.checkbox && answer == null) {
+      answer = false;
+    }
+
     return {
       'type': type.toString().split('.').last, // Converts enum to string
       'questionText': questionText,
@@ -99,11 +103,13 @@ class Question {
   }
 
   static Question fromJson(Map<String, dynamic> json) {
+    AnswerType type = _stringToAnswerType(json['type']);
+
     return Question(
-      type: _stringToAnswerType(json['type']),
+      type: type,
       questionText: json['questionText'],
       options: json['options']?.cast<dynamic>(),
-      answer: json['answer'],
+      answer: json['answer'] ?? (type == AnswerType.checkbox ? false : null),
       score: json['score'] as double,
     );
   }
