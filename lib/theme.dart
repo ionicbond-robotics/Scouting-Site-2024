@@ -7,7 +7,7 @@ class GlobalIcons {
 
 class GlobalColors {
   static Color primaryColor = Colors.black;
-  static const Color teamColor = Color.fromRGBO(255, 102, 196, 1);
+  static const Color teamColor = Color(0xffff66c4);
   static const Color appBarColor = Colors.black;
   static Color get backgroundColor {
     if (primaryColor == Colors.white) return primaryColor;
