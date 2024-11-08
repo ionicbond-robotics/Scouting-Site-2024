@@ -33,12 +33,12 @@ void main() {
     final gameField = find.widgetWithText(DialogTextInput, "Game #");
     expect(gameField, findsOneWidget);
 
-    await widgetTester.enterText(gameField, "1");
+    await widgetTester.enterText(gameField, "0");
     await widgetTester.testTextInput.receiveAction(TextInputAction.done);
     await widgetTester.pumpAndSettle();
 
     final scoutingOnTeamField =
-        find.widgetWithText(DropdownMenu<String>, "Scouting On");
+        find.widgetWithText(DialogTextInput, "Scouting On");
 
     expect(scoutingOnTeamField, findsOneWidget);
   });
