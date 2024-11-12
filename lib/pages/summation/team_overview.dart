@@ -1,8 +1,8 @@
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/services.dart';
 
 // Project imports:
 import 'package:scouting_site/services/cast.dart';
@@ -12,19 +12,23 @@ import 'package:scouting_site/services/scouting/helper_methods.dart';
 import 'package:scouting_site/services/scouting/question.dart';
 import 'package:scouting_site/theme.dart';
 import 'package:scouting_site/widgets/avgs_graph.dart';
+import 'package:scouting_site/widgets/dialog_widgets/dialog_image_corousel.dart';
 import 'package:scouting_site/widgets/dialog_widgets/dialog_toggle_switch.dart';
 
 class TeamOverviewPage extends StatefulWidget {
   final int team;
   final List<FormData> forms;
   final List<FormData> avgs;
+  final List<FormData> pitScoutingData;
   final String teamName;
+
   const TeamOverviewPage(
       {super.key,
       required this.team,
       required this.forms,
       required this.avgs,
-      required this.teamName});
+      required this.teamName,
+      required this.pitScoutingData});
 
   @override
   State<TeamOverviewPage> createState() => _TeamOverviewPageState();
@@ -37,6 +41,10 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
   Map<String, Map<String, bool>> questionSwitchesMap = {};
   double screenWidth = 0;
   Map<String, bool> pagesActive = {};
+
+  List<Uint8List> images = [];
+  double maxImageHeight = 0;
+  double maxImageWidth = 0;
 
   @override
   void initState() {
@@ -51,6 +59,43 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
         questionSwitchesMap[page.pageName]?[question.questionText] = true;
       }
     }
+
+    _loadImages();
+  }
+
+  Future<void> _loadImages() async {
+    // Fetch images and determine maximum dimensions
+    List<Uint8List> loadedImages = [];
+    double maxWidth = 0;
+    double maxHeight = 0;
+
+    for (var form in widget.pitScoutingData) {
+      for (var page in form.pages) {
+        for (var question in page.questions) {
+          if (question.type == AnswerType.photo) {
+            Uint8List imageBytes = Uint8List.fromList(
+                List<int>.from(question.answer.whereType<int>()));
+            loadedImages.add(imageBytes);
+
+            // Decode image to get dimensions
+            final decodedImage = await decodeImageFromList(imageBytes);
+            if (decodedImage.width > maxWidth) {
+              maxWidth = decodedImage.width.toDouble();
+            }
+            if (decodedImage.height > maxHeight) {
+              maxHeight = decodedImage.height.toDouble();
+            }
+          }
+        }
+      }
+    }
+
+    // Update state with images and max dimensions
+    setState(() {
+      images = loadedImages;
+      maxImageWidth = maxWidth;
+      maxImageHeight = maxHeight;
+    });
   }
 
   @override
@@ -79,7 +124,20 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
           color: GlobalColors.backgroundColor,
           child: Column(
             children: [
-              const SizedBox(height: 100),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  getPitScoutingDatatable(widget.pitScoutingData),
+                  SizedBox(
+                    width: maxImageWidth,
+                    height: maxImageHeight,
+                    child: ImageCarousel(
+                      imageBytesList: images,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 50),
               Row(
                 children: [
                   SizedBox(
@@ -435,10 +493,17 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
         textScaler: const TextScaler.linear(1.5),
       ));
       for (Question question in page.questions) {
-        answersWidgets.add(Text(
-          "${question.questionText}: ${question.answer}",
-          textScaler: const TextScaler.linear(1.2),
-        ));
+        if (question.type != AnswerType.photo) {
+          answersWidgets.add(Text(
+            "${question.questionText}: ${question.answer}",
+            textScaler: const TextScaler.linear(1.2),
+          ));
+        } else {
+          Uint8List imageBytes = Uint8List.fromList(
+              List<int>.from(question.answer.whereType<int>()));
+          answersWidgets.add(Text(question.questionText));
+          answersWidgets.add(Image.memory(imageBytes));
+        }
       }
       answersWidgets.add(const Divider());
       answersWidgets.add(const SizedBox(height: 5));
@@ -531,5 +596,37 @@ class _TeamOverviewPageState extends State<TeamOverviewPage> {
 
       selectedTeamQuestionAnswerAverages[questionText] = averageAnswer;
     });
+  }
+
+  Widget getPitScoutingDatatable(List<FormData> data) {
+    return Column(
+      children: data.map((form) {
+        return TextButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(
+                        "${form.scoutedTeam} - Game #${form.game} by ${form.scouter}"),
+                    content: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SingleChildScrollView(
+                          child: Column(
+                            children: [...getAnswersWidgetsForDialog(form)],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                });
+          },
+          child: Text("${form.scoutedTeam} by ${form.scouter}"),
+        );
+      }).toList(),
+    );
   }
 }
