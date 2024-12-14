@@ -1,75 +1,92 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 import 'dart:typed_data';
-import 'dart:io';
+import 'dart:convert';
+
+import 'package:universal_html/html.dart' as html;
 
 class CameraCaptureWidget extends StatefulWidget {
-  final bool multiple; // Whether to allow multiple images
-  final Function(List<Uint8List>)? onImageListUpdated; // Callback to listen to images
+  final bool multiple;
+  final Function(List<Uint8List>)? onImageListUpdated;
 
   const CameraCaptureWidget({
-    Key? key,
+    super.key,
     this.multiple = false,
     this.onImageListUpdated,
-  }) : super(key: key);
+  });
 
   @override
   State<CameraCaptureWidget> createState() => _CameraCaptureWidgetState();
 }
 
 class _CameraCaptureWidgetState extends State<CameraCaptureWidget> {
-  CameraController? _cameraController;
-  List<Uint8List> _images = []; // Store image bytes
+  List<Uint8List> _images = [];
+  html.VideoElement? _videoElement;
 
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
+    _initializeWebCamera();
   }
 
-  Future<void> _initializeCamera() async {
+  // Initialize the web camera
+  Future<void> _initializeWebCamera() async {
     try {
-      final cameras = await availableCameras();
-      if (cameras.isNotEmpty) {
-        _cameraController = CameraController(
-          cameras[0],
-          ResolutionPreset.medium,
-        );
-        await _cameraController?.initialize();
-        setState(() {}); // Update UI once camera is initialized
-      }
+      final html.VideoElement videoElement = html.VideoElement()
+        ..width = 640
+        ..height = 480
+        ..style.border = '1px solid black';
+
+      final html.MediaStream? stream = await html.window.navigator.mediaDevices
+          ?.getUserMedia({'video': true});
+      videoElement.srcObject = stream;
+      html.document.body!
+          .append(videoElement); // Append to DOM to display video
+      videoElement.play();
+
+      setState(() {
+        _videoElement = videoElement;
+      });
     } catch (e) {
-      print("Error initializing camera: $e");
+      log("Error accessing web camera: $e");
     }
   }
 
+  // Capture an image from the video element
   Future<void> _captureImage() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized) {
-      print("Camera not initialized.");
+    if (_videoElement == null) {
+      log("Web camera is not initialized.");
       return;
     }
 
     try {
-      final XFile imageFile = await _cameraController!.takePicture();
-      final Uint8List imageBytes = await File(imageFile.path).readAsBytes();
+      final html.CanvasElement canvas =
+          html.CanvasElement(width: 640, height: 480);
+      final html.CanvasRenderingContext2D context = canvas.context2D;
+      context.drawImage(_videoElement!, 0, 0);
+
+      // Capture the image from canvas and convert it to a Uint8List
+      final imageBytes = canvas.toDataUrl('image/png');
+      final decodedBytes = base64Decode(imageBytes.split(',').last);
 
       setState(() {
         if (widget.multiple) {
-          _images.add(imageBytes);
+          _images.add(Uint8List.fromList(decodedBytes));
         } else {
-          _images = [imageBytes];
+          _images = [Uint8List.fromList(decodedBytes)];
         }
       });
 
       widget.onImageListUpdated?.call(_images);
     } catch (e) {
-      print("Error capturing image: $e");
+      log("Error capturing image: $e");
     }
   }
 
   @override
   void dispose() {
-    _cameraController?.dispose();
+    _videoElement?.pause();
     super.dispose();
   }
 
@@ -77,10 +94,10 @@ class _CameraCaptureWidgetState extends State<CameraCaptureWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _cameraController != null && _cameraController!.value.isInitialized
-            ? AspectRatio(
-                aspectRatio: _cameraController!.value.aspectRatio,
-                child: CameraPreview(_cameraController!),
+        _videoElement != null
+            ? const AspectRatio(
+                aspectRatio: 640 / 480,
+                child: HtmlElementView(viewType: 'videoElement'),
               )
             : const Text('Loading camera...'),
         const SizedBox(height: 20),
