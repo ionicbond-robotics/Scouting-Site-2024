@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,9 +90,8 @@ class QuestionWidgetState extends State<QuestionWidget> {
 
   Widget generatePhotoWidget(Question question) {
     return CameraCaptureWidget(
-      multiple: true,
-      onImageListUpdated: (images) {
-        question.answer = images;
+      onImageCaptured: (Uint8List image) async {
+        question.answer = base64Encode(image);
       },
     );
   }
